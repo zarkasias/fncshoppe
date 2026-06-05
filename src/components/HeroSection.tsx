@@ -12,9 +12,9 @@ export default function HeroSection() {
   };
 
   return (
-    <section data-fnc-hero className="mx-auto max-w-5xl px-6 pb-20">
+    <section data-fnc-hero className="mx-auto max-w-5xl px-6">
       <div
-        className={`fnc-hero-grid grid grid-cols-1 overflow-hidden bg-gray-50 md:grid-cols-2 md:items-stretch ${
+        className={`fnc-hero-grid grid grid-cols-1 bg-gray-50 md:grid-cols-2 ${
           loaded ? "loaded" : ""
         }`}
       >
@@ -40,16 +40,17 @@ export default function HeroSection() {
         </div>
 
         <div className={`fnc-hero-image ${loaded ? "loaded" : ""}`}>
+          <img src="/hero.png" alt="Handmade crafts by FNC Shoppe" className="fnc-img-inner" />
           {/* Replace with your product photo:
               <img src="/your-image.jpg" alt="Handmade crafts by FNC Shoppe" className="fnc-img-inner" /> */}
-          <div className="fnc-img-placeholder">
+          {/* <div className="fnc-img-placeholder">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2"/>
               <circle cx="8.5" cy="8.5" r="1.5"/>
               <polyline points="21 15 16 10 5 21"/>
             </svg>
             <span>Add your product photo here</span>
-          </div>
+          </div> */}
 
           <div className="fnc-tag">
             <span className="fnc-tag-label">Every piece</span>
@@ -58,10 +59,10 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div id="shoppe" className="flex items-center gap-4 mt-18">
-        <div className="flex-1 h-px bg-gray-200" />
-        <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Scroll</span>
-        <div className="flex-1 h-px bg-gray-200" />
+      <div id="shoppe" className="fnc-hero-scroll mt-auto flex items-center gap-4">
+        <div className="h-px flex-1 bg-gray-200" />
+        <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400">Scroll</span>
+        <div className="h-px flex-1 bg-gray-200" />
       </div>
     </section>
   );

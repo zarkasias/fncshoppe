@@ -102,7 +102,7 @@ export default function FeaturedGrid({ products }: FeaturedGridProps) {
   if (!products || products.length === 0) return null;
 
   return (
-    <section className="max-w-5xl mx-auto px-6 pb-16">
+    <section className="max-w-5xl mx-auto px-6 mt-12 pb-16">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {products.map((product, i) => (
           <ProductCard key={product.id} product={product} index={i} />

@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-        <FeaturedGrid products={products} />
+      <FeaturedGrid products={products} />
     </>
   );
 }

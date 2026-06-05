@@ -43,8 +43,20 @@ body {
   margin: 0;
 }
 
+[data-fnc-hero] {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 6rem);
+}
+
 [data-fnc-hero] .fnc-hero-grid {
-  min-height: calc(100dvh - 10rem);
+  flex: 1;
+  align-items: center;
+  min-height: 0;
+}
+
+.fnc-hero-scroll {
+  padding-block: 2rem;
 }
 
 .fnc-hero-text {
@@ -55,7 +67,7 @@ body {
 }
 @media (min-width: 768px) {
   .fnc-hero-text {
-    padding: 2.5rem 2rem 2.5rem 0;
+    padding: 1.5rem 2rem 2.5rem 0;
   }
 }
 .fnc-eyebrow {
@@ -147,10 +159,20 @@ body {
   position: relative;
   overflow: hidden;
   background: #f1f0ee;
-  min-height: 0;
-  height: 100%;
+  width: 100%;
+  max-width: 420px;
+  max-height: min(500px, 68vh);
+  aspect-ratio: 4 / 5;
+  margin-inline: auto;
+  border-radius: 0.75rem;
   opacity: 0;
   transition: opacity 0.6s ease 0.1s;
+}
+@media (min-width: 768px) {
+  .fnc-hero-image {
+    margin-inline: 0;
+    margin-left: auto;
+  }
 }
 .fnc-hero-image::after {
   content: '';
@@ -203,7 +225,7 @@ body {
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #A89880;
+  color: #312fbc;
   display: block;
   margin-bottom: 3px;
 }
@@ -222,10 +244,10 @@ body {
 .loaded .fnc-hero-image { opacity: 1; }
 
 @media (max-width: 767px) {
-  [data-fnc-hero] .fnc-hero-grid {
-    grid-template-rows: auto 1fr;
-  }
   .fnc-hero-text {
     padding: 2rem 0 1.5rem;
+  }
+  .fnc-hero-image {
+    max-height: min(360px, 44vh);
   }
 }

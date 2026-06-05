@@ -18,7 +18,8 @@ export default function AppLayout() {
   }, []);
 
   useEffect(() => {
-    setIsTopOfPage(window.scrollY < 12);
+    window.scrollTo({ top: 0, left: 0 });
+    setIsTopOfPage(true);
   }, [pathname]);
 
   return (
