@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "@/components/global/Navbar";
+import Footer from "@/components/global/Footer";
 
 export default function AppLayout() {
   const [isTopOfPage, setIsTopOfPage] = useState(true);
@@ -21,11 +22,12 @@ export default function AppLayout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen border">
+    <div className="bg-gray-50 min-h-screen border">
       <Navbar isTopOfPage={isTopOfPage} />
-      <main className="bg-gray-50 pt-24">
+      <main className="min-h-screen bg-gray-50 pt-24">
         <Outlet />
       </main>
+      <Footer />
     </div>
   );
 }
