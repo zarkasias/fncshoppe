@@ -20,4 +20,5 @@ export type Product = {
 
 export enum SelectedPage {
   Home = "home",
+  Shop = "shoppe",
 }

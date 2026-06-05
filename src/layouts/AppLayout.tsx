@@ -9,7 +9,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsTopOfPage(window.scrollY === 0);
+      setIsTopOfPage(window.scrollY < 12);
     };
 
     handleScroll();
@@ -18,7 +18,7 @@ export default function AppLayout() {
   }, []);
 
   useEffect(() => {
-    setIsTopOfPage(window.scrollY === 0);
+    setIsTopOfPage(window.scrollY < 12);
   }, [pathname]);
 
   return (

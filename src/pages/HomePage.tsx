@@ -1,6 +1,12 @@
 import FeaturedGrid from "@/components/FeatureGrid";
+import HeroSection from "@/components/HeroSection";
 import { products } from "@/shared/products";
 
 export default function HomePage() {
-  return <FeaturedGrid products={products} />;
+  return (
+    <>
+      <HeroSection />
+        <FeaturedGrid products={products} />
+    </>
+  );
 }

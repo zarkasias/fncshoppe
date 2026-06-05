@@ -16,8 +16,7 @@ export default function Footer() {
               Shop With Us
             </h4>
             <p className="text-sm leading-relaxed text-gray-600">
-              Every product is hand-selected. Click through to purchase on Amazon or Etsy with
-              confidence.
+            Handmade art and crafts, designed with intention.
             </p>
           </div>
         </div>
