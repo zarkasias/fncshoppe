@@ -28,8 +28,8 @@ export default function HeroSection() {
           <div className="fnc-bar" />
           <p className="fnc-sub">
             Handmade art and crafts, designed with intention.
-            Every item in the FNC Shoppe is made by hand —
-            thoughtful gifts and original pieces for everyday life.
+            Every item in the FNC Shoppe is an original design —
+            thoughtful gifts and everyday essentials.
           </p>
           <div className="fnc-cta-row">
             <button type="button" className="fnc-btn-primary" onClick={scrollToShop}>
@@ -54,7 +54,7 @@ export default function HeroSection() {
 
           <div className="fnc-tag">
             <span className="fnc-tag-label">Every piece</span>
-            <span className="fnc-tag-value">Made by hand</span>
+            <span className="fnc-tag-value">An original design</span>
           </div>
         </div>
       </div>
