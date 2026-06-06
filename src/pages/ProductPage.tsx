@@ -5,10 +5,10 @@ import ProductInteriorGallery from "@/components/ProductInteriorGallery";
 import { getProductById } from "@/shared/products";
 import type { Product } from "@/shared/types";
 
-// function formatCategory(type: Product["type"]) {
-//   if (!type) return null;
-//   return type.replace(/-/g, " ");
-// }
+function formatCategory(type: Product["type"]) {
+  if (!type) return null;
+  return type.replace(/-/g, " ");
+}
 
 function interiorGalleryTitle(type: Product["type"]) {
   if (type === "journal") return "Inside the journal";
@@ -33,7 +33,8 @@ export default function ProductPage() {
 
   const isAvailable = product.available !== false;
   const interiorImages = product.interiorImages ?? [];
-  //const categoryLabel = formatCategory(product.type);
+  const store = product.link?.includes("amazon") ? "Amazon" : "Etsy";
+  const categoryLabel = formatCategory(product.type);
 
   return (
     <div className="bg-white pb-20">
@@ -68,11 +69,11 @@ export default function ProductPage() {
             transition={{ duration: 0.7, delay: 0.15 }}
             className="flex flex-col justify-center"
           >
-            {/* {categoryLabel && (
+            {categoryLabel && (
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
                 {categoryLabel}
               </p>
-            )} */}
+            )}
             <h1 className="font-cinzel text-4xl leading-[1.1] tracking-[-0.01em] text-gray-900 md:text-5xl">
               {product.name}
             </h1>
@@ -94,7 +95,7 @@ export default function ProductPage() {
                 <Shield className="h-4 w-4 shrink-0 text-[#38BDF8]" />
                 <div>
                   <p className="text-sm font-medium text-gray-900">Verified Selection</p>
-                  <p className="text-xs text-gray-500">Hand-curated by FNC Shoppe</p>
+                  <p className="text-xs text-gray-500">Designed by FNC Shoppe</p>
                 </div>
               </div>
             )}
@@ -107,7 +108,7 @@ export default function ProductPage() {
                   rel="noopener noreferrer"
                   className="flex w-full items-center justify-center gap-2 rounded bg-[#38BDF8] py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#0ea5e9]"
                 >
-                  Buy on Amazon <ExternalLink className="h-4 w-4" />
+                  Buy on {store} <ExternalLink className="h-4 w-4" />
                 </a>
               )}
               {isAvailable && product.etsy_url && (

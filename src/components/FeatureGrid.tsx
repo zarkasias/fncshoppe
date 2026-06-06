@@ -1,7 +1,13 @@
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import type { Product } from '@/shared/types';
+import ProductFilterBar, {
+  filterAndSortProducts,
+  getFilterOptions,
+  type ProductFilters,
+} from '@/components/ProductFilterBar';
 
 type ProductCardProps = {
   product: Product;
@@ -41,7 +47,7 @@ function ProductCard({ product, index }: ProductCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.08, ease: [0.2, 1, 0.3, 1] }}
-      className="bg-[#F1F5F9] rounded-xl overflow-hidden"
+      className="bg-[#F1F5F9] rounded-xl overflow-hidden border border-gray-200"
     >
       {isAvailable ? (
         <Link to={`/product/${product.id}`} className="block">
@@ -98,16 +104,45 @@ type FeaturedGridProps = {
   products: Product[];
 };
 
+const DEFAULT_FILTERS: ProductFilters = {
+  category: 'all',
+  store: 'all',
+  sort: 'default',
+};
+
 export default function FeaturedGrid({ products }: FeaturedGridProps) {
+  const [filters, setFilters] = useState<ProductFilters>(DEFAULT_FILTERS);
+
+  const { categories, stores } = useMemo(() => getFilterOptions(products), [products]);
+
+  const filteredProducts = useMemo(
+    () => filterAndSortProducts(products, filters),
+    [products, filters],
+  );
+
   if (!products || products.length === 0) return null;
 
   return (
     <section className="max-w-5xl mx-auto px-6 mt-12 pb-16">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        {products.map((product, i) => (
-          <ProductCard key={product.id} product={product} index={i} />
-        ))}
-      </div>
+      <ProductFilterBar
+        filters={filters}
+        onChange={setFilters}
+        categories={categories}
+        stores={stores}
+        resultCount={filteredProducts.length}
+      />
+
+      {filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {filteredProducts.map((product, i) => (
+            <ProductCard key={product.id} product={product} index={i} />
+          ))}
+        </div>
+      ) : (
+        <p className="rounded-xl border border-dashed border-gray-200 bg-white px-6 py-12 text-center text-sm text-gray-500">
+          No products match these filters. Try adjusting category or store.
+        </p>
+      )}
     </section>
   );
 }

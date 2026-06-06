@@ -7,8 +7,10 @@ export type Product = {
   id: number;
   name: string;
   image_url: string;
+  date_added: string;
   price_range?: string;
-  type?: "journal" | "pottery" | "t-shirt" | "tote";
+  store?: "amazon" | "etsy";
+  type?: "journal" | "pottery" | "t-shirt" | "tote" | "notebook" | "phone case";
   description?: string;
   story?: string;
   link?: string;
