@@ -107,7 +107,7 @@ type FeaturedGridProps = {
 const DEFAULT_FILTERS: ProductFilters = {
   category: 'all',
   store: 'all',
-  sort: 'default',
+  sort: 'newest',
 };
 
 export default function FeaturedGrid({ products }: FeaturedGridProps) {

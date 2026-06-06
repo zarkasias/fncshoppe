@@ -1,6 +1,6 @@
 import type { Product } from "@/shared/types";
 
-export type SortOption = "default" | "newest" | "oldest";
+export type SortOption = "newest" | "oldest";
 export type CategoryFilter = "all" | NonNullable<Product["type"]>;
 export type StoreFilter = "all" | NonNullable<Product["store"]>;
 
@@ -85,7 +85,6 @@ export default function ProductFilterBar({
   ];
 
   const sortOptions = [
-    { value: "default", label: "All products" },
     { value: "newest", label: "Latest" },
     { value: "oldest", label: "Oldest" },
   ];
@@ -133,11 +132,6 @@ export function filterAndSortProducts(products: Product[], filters: ProductFilte
 
   return [...filtered].sort((a, b) => {
     const nameOrder = a.name.localeCompare(b.name);
-
-    if (filters.sort === "default") {
-      return nameOrder;
-    }
-
     const dateA = new Date(a.date_added).getTime();
     const dateB = new Date(b.date_added).getTime();
     const dateOrder = filters.sort === "oldest" ? dateA - dateB : dateB - dateA;
