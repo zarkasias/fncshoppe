@@ -24,3 +24,13 @@ export enum SelectedPage {
   Home = "home",
   Shop = "shoppe",
 }
+
+export type SortOption = "newest" | "oldest";
+export type CategoryFilter = "all" | NonNullable<Product["type"]>;
+export type StoreFilter = "all" | NonNullable<Product["store"]>;
+
+export type ProductFilters = {
+  category: CategoryFilter;
+  store: StoreFilter;
+  sort: SortOption;
+};
