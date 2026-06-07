@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import type { Product } from '@/shared/types';
-import ProductFilterBar, {
+import type { Product, ProductFilters } from '@/shared/types';
+import ProductFilterBar from '@/components/ProductFilterBar';
+import {
   filterAndSortProducts,
   getFilterOptions,
-  type ProductFilters,
-} from '@/components/ProductFilterBar';
+} from '@/shared/methods';
 
 type ProductCardProps = {
   product: Product;
