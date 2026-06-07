@@ -52,12 +52,13 @@ export const products: Product[] = [
   },
   {
     id: 4,
-    name: "Floral Journal 2",
+    name: "My Journal: Floral 2",
     image_url: "/products/journals/floral_journal_2/cover-new.png",
     price_range: "",
     type: "journal",  
     date_added: "2026-06-05",
-    available: false,
+    available: true,
+    link: "https://www.amazon.com/dp/B0H4D2YTQN?ref_=ast_author_dp&th=1&psc=1",
     store: "amazon",
     interiorImages: [
       { src: "/products/journals/floral_journal_2/page1.jpeg", alt: "Floral Journal 2 — inside page 1" },
