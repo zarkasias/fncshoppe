@@ -7,6 +7,12 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
+import {
+  getPrimaryImage,
+  getProductPrice,
+  isProductAvailable,
+} from "@/lib/products/product-utils";
+
 import ProductFilterBar from "@/components/ProductFilterBar";
 import { filterAndSortProducts, getFilterOptions } from "@/shared/methods";
 import type { Product, ProductFilters } from "@/shared/types";
@@ -15,61 +21,6 @@ type ProductCardProps = {
   product: Product;
   index: number;
 };
-
-function getPrimaryImage(product: Product) {
-  return (
-    product.images?.find((image) => image.is_primary) ??
-    product.images?.sort((a, b) => a.position - b.position)[0]
-  );
-}
-
-function getProductPrice(product: Product) {
-  // 1. Prefer direct-sale pricing
-  const variantPrices =
-    product.variants
-      ?.map((variant) => Number(variant.price))
-      .filter((price) => !Number.isNaN(price)) ?? [];
-
-  if (variantPrices.length > 0) {
-    const minPrice = Math.min(...variantPrices);
-    const maxPrice = Math.max(...variantPrices);
-
-    if (minPrice === maxPrice) {
-      return `$${minPrice.toFixed(2)}`;
-    }
-
-    return `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`;
-  }
-
-  // 2. Fall back to marketplace pricing
-  const listing = product.listings?.find(
-    (listing) => listing.available && listing.price_min !== null,
-  );
-
-  if (!listing || listing.price_min === null) {
-    return null;
-  }
-
-  const minPrice = Number(listing.price_min);
-  const maxPrice =
-    listing.price_max !== null ? Number(listing.price_max) : minPrice;
-
-  if (minPrice === maxPrice) {
-    return `$${minPrice.toFixed(2)}`;
-  }
-
-  return `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`;
-}
-
-function isProductAvailable(product: Product) {
-  const hasAvailableVariant =
-    product.variants?.some((variant) => variant.available) ?? false;
-
-  const hasAvailableListing =
-    product.listings?.some((listing) => listing.available) ?? false;
-
-  return hasAvailableVariant || hasAvailableListing;
-}
 
 function ProductCard({ product, index }: ProductCardProps) {
   const productHref = `/product/${product.id}`;
@@ -91,7 +42,7 @@ function ProductCard({ product, index }: ProductCardProps) {
       className="overflow-hidden rounded-xl border border-gray-200 bg-white"
     >
       <Link href={productHref} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-4/3 overflow-hidden">
           {primaryImage?.image_url ? (
             <Image
               src={primaryImage.image_url}

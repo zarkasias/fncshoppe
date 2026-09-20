@@ -3,75 +3,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowLeft, ExternalLink, Shield } from "lucide-react";
+import {
+  getPrimaryImage,
+  getGalleryImages,
+  getGalleryTitle,
+  getProductPrice,
+  isProductAvailable,
+} from "@/lib/products/product-utils";
 import ProductInteriorGallery from "@/components/ProductInteriorGallery";
 import type { Product } from "@/shared/types";
-
-function getPrimaryImage(product: Product) {
-  return (
-    product.images?.find((image) => image.is_primary) ??
-    [...(product.images ?? [])].sort((a, b) => a.position - b.position)[0]
-  );
-}
-
-function getGalleryImages(product: Product) {
-  return [...(product.images ?? [])]
-    .filter((image) => !image.is_primary)
-    .sort((a, b) => a.position - b.position)
-    .map((image) => ({
-      src: image.image_url,
-      alt: image.alt_text ?? product.name,
-    }));
-}
-
-function getProductPrice(product: Product) {
-  const variantPrices =
-    product.variants
-      ?.map((variant) => Number(variant.price))
-      .filter((price) => !Number.isNaN(price)) ?? [];
-
-  if (variantPrices.length > 0) {
-    const minPrice = Math.min(...variantPrices);
-    const maxPrice = Math.max(...variantPrices);
-
-    return minPrice === maxPrice
-      ? `$${minPrice.toFixed(2)}`
-      : `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`;
-  }
-
-  const listing = product.listings?.find(
-    (listing) => listing.available && listing.price_min !== null,
-  );
-
-  if (!listing || listing.price_min === null) {
-    return null;
-  }
-
-  const minPrice = Number(listing.price_min);
-  const maxPrice =
-    listing.price_max !== null ? Number(listing.price_max) : minPrice;
-
-  return minPrice === maxPrice
-    ? `$${minPrice.toFixed(2)}`
-    : `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`;
-}
-
-function isProductAvailable(product: Product) {
-  const directSaleAvailable =
-    product.variants?.some((variant) => variant.available) ?? false;
-
-  const marketplaceAvailable =
-    product.listings?.some((listing) => listing.available) ?? false;
-
-  return directSaleAvailable || marketplaceAvailable;
-}
-
-function getGalleryTitle(product: Product) {
-  if (product.category?.slug === "journals") {
-    return "Inside the journal";
-  }
-
-  return "Gallery";
-}
 
 export default function ProductPage({ product }: { product: Product }) {
   const primaryImage = getPrimaryImage(product);
@@ -96,7 +36,7 @@ export default function ProductPage({ product }: { product: Product }) {
             className="mb-10 inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span className="text-xs font-medium uppercase tracking-[0.1em]">
+            <span className="text-xs font-medium uppercase tracking-widest">
               Back to shop
             </span>
           </Link>
