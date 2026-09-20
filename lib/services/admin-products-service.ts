@@ -1,13 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { PRODUCT_SELECT } from "./utils/product-select";
 
-export async function getPublishedProducts() {
+export async function getAllProducts() {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
-    .eq("status", "published")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -17,18 +16,32 @@ export async function getPublishedProducts() {
   return data;
 }
 
-export async function getProductById(id: string) {
+export async function getAdminProductById(id: string) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
     .eq("id", id)
-    .eq("status", "published")
-    .single();
+    .maybeSingle();
 
   if (error) {
-    return null;
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function getAllCategories() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .order("name");
+
+  if (error) {
+    throw new Error(error.message);
   }
 
   return data;

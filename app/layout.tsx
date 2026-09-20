@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import SiteShell from "@/components/SiteShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -8,6 +7,12 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.svg" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body><SiteShell>{children}</SiteShell></body></html>;
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
 }
