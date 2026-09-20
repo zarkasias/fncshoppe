@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Category, Product, ProductStatus } from "@/shared/types";
+import { saveProduct } from "@/app/admin/(protected)/products/actions";
 
 type ProductFormProps = {
   product?: Product;
@@ -19,13 +20,15 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   );
 
   return (
-    <form className="space-y-6">
+    <form className="space-y-6" action={saveProduct}>
+      {product && <input type="hidden" name="id" value={product.id} />}
       <div>
         <label className="mb-1 block text-sm font-medium text-gray-700">
           Name
         </label>
 
         <input
+          name="name"
           value={name}
           onChange={(event) => setName(event.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2"
@@ -38,6 +41,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         </label>
 
         <input
+          name="slug"
           value={slug}
           onChange={(event) => setSlug(event.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2"
@@ -50,6 +54,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         </label>
 
         <textarea
+          name="description"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           rows={5}
@@ -63,6 +68,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         </label>
 
         <select
+          name="category_id"
           value={categoryId}
           onChange={(event) => setCategoryId(event.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2"
@@ -83,6 +89,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         </label>
 
         <select
+          name="status"
           value={status}
           onChange={(event) => setStatus(event.target.value as ProductStatus)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2"
