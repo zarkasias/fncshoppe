@@ -10,7 +10,7 @@ import {
   getProductPrice,
   isProductAvailable,
 } from "@/lib/products/product-utils";
-import ProductInteriorGallery from "@/components/ProductInteriorGallery";
+import ProductInteriorGallery from "@/components/products/ProductInteriorGallery";
 import type { Product } from "@/shared/types";
 
 export default function ProductPage({ product }: { product: Product }) {

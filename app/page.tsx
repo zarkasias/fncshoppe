@@ -1,4 +1,4 @@
-import FeaturedGrid from "@/components/FeatureGrid";
+import FeaturedGrid from "@/components/products/FeatureGrid";
 import HeroSection from "@/components/HeroSection";
 import { getPublishedProducts } from "@/lib/services/products-service";
 

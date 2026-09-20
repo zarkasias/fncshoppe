@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import ProductPage from "@/components/ProductPage";
+import ProductPage from "@/components/products/ProductPage";
 import { getProductById } from "@/lib/services/products-service";
 
 // export function generateStaticParams() {
