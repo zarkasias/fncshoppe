@@ -1,0 +1,409 @@
+module.exports = [
+"[externals]/next/dist/shared/lib/no-fallback-error.external.js [external] (next/dist/shared/lib/no-fallback-error.external.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+var mod = __turbopack_context__.x("next/dist/shared/lib/no-fallback-error.external.js", () => require("next/dist/shared/lib/no-fallback-error.external.js"));
+
+module.exports = mod;
+}),
+"[project]/app/favicon.ico (static in ecmascript, tag client)", ((__turbopack_context__) => {
+
+__turbopack_context__.v("/_next/static/media/favicon.2vob68tjqpejf.ico" + (globalThis["NEXT_CLIENT_ASSET_SUFFIX"] || ''));}),
+"[project]/app/favicon.ico.mjs { IMAGE => \"[project]/app/favicon.ico (static in ecmascript, tag client)\" } [app-rsc] (structured image object, ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$favicon$2e$ico__$28$static__in__ecmascript$2c$__tag__client$29$__ = __turbopack_context__.i("[project]/app/favicon.ico (static in ecmascript, tag client)");
+;
+const __TURBOPACK__default__export__ = {
+    src: __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$favicon$2e$ico__$28$static__in__ecmascript$2c$__tag__client$29$__["default"],
+    width: 256,
+    height: 256
+};
+}),
+"[project]/app/page.tsx [app-rsc] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>HomePage
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.js [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$FeatureGrid$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/FeatureGrid.tsx [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$HeroSection$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/HeroSection.tsx [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$shared$2f$products$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/shared/products.ts [app-rsc] (ecmascript)");
+;
+;
+;
+;
+function HomePage() {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Fragment"], {
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$HeroSection$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
+                fileName: "[project]/app/page.tsx",
+                lineNumber: 6,
+                columnNumber: 12
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$FeatureGrid$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
+                products: __TURBOPACK__imported__module__$5b$project$5d2f$shared$2f$products$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["products"]
+            }, void 0, false, {
+                fileName: "[project]/app/page.tsx",
+                lineNumber: 6,
+                columnNumber: 27
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/app/page.tsx",
+        lineNumber: 6,
+        columnNumber: 10
+    }, this);
+}
+}),
+"[project]/app/page.tsx [app-rsc] (ecmascript, Next.js Server Component)", (function(__turbopack_context__){
+
+__turbopack_context__.n(__turbopack_context__.i("[project]/app/page.tsx [app-rsc] (ecmascript)"));
+}),
+"[project]/components/FeatureGrid.tsx [app-rsc] (client reference proxy)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+// This file is generated by next-core EcmascriptClientReferenceModule.
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-turbopack-server.js [app-rsc] (ecmascript)");
+;
+const __TURBOPACK__default__export__ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerClientReference"])(function() {
+    throw new Error("Attempted to call the default export of [project]/components/FeatureGrid.tsx from the server, but it's on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.");
+}, "[project]/components/FeatureGrid.tsx", "default");
+}),
+"[project]/components/FeatureGrid.tsx [app-rsc] (client reference proxy) <module evaluation>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+// This file is generated by next-core EcmascriptClientReferenceModule.
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-turbopack-server.js [app-rsc] (ecmascript)");
+;
+const __TURBOPACK__default__export__ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerClientReference"])(function() {
+    throw new Error("Attempted to call the default export of [project]/components/FeatureGrid.tsx <module evaluation> from the server, but it's on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.");
+}, "[project]/components/FeatureGrid.tsx <module evaluation>", "default");
+}),
+"[project]/components/FeatureGrid.tsx [app-rsc] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$FeatureGrid$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/components/FeatureGrid.tsx [app-rsc] (client reference proxy) <module evaluation>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$FeatureGrid$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__ = __turbopack_context__.i("[project]/components/FeatureGrid.tsx [app-rsc] (client reference proxy)");
+;
+__turbopack_context__.n(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$FeatureGrid$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__);
+}),
+"[project]/components/HeroSection.tsx [app-rsc] (client reference proxy)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+// This file is generated by next-core EcmascriptClientReferenceModule.
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-turbopack-server.js [app-rsc] (ecmascript)");
+;
+const __TURBOPACK__default__export__ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerClientReference"])(function() {
+    throw new Error("Attempted to call the default export of [project]/components/HeroSection.tsx from the server, but it's on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.");
+}, "[project]/components/HeroSection.tsx", "default");
+}),
+"[project]/components/HeroSection.tsx [app-rsc] (client reference proxy) <module evaluation>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+// This file is generated by next-core EcmascriptClientReferenceModule.
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-turbopack-server.js [app-rsc] (ecmascript)");
+;
+const __TURBOPACK__default__export__ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerClientReference"])(function() {
+    throw new Error("Attempted to call the default export of [project]/components/HeroSection.tsx <module evaluation> from the server, but it's on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.");
+}, "[project]/components/HeroSection.tsx <module evaluation>", "default");
+}),
+"[project]/components/HeroSection.tsx [app-rsc] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$HeroSection$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/components/HeroSection.tsx [app-rsc] (client reference proxy) <module evaluation>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$HeroSection$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__ = __turbopack_context__.i("[project]/components/HeroSection.tsx [app-rsc] (client reference proxy)");
+;
+__turbopack_context__.n(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$HeroSection$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__);
+}),
+"[project]/shared/products.ts [app-rsc] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "getProductById",
+    ()=>getProductById,
+    "getProductIds",
+    ()=>getProductIds,
+    "products",
+    ()=>products
+]);
+const products = [
+    {
+        id: 1,
+        name: "My Journal",
+        image_url: "/products/journals/my_journal/cover-new.png",
+        price_range: "$10.50",
+        type: "journal",
+        date_added: "2026-06-05",
+        available: true,
+        store: "amazon",
+        link: "https://www.amazon.com/My-Journal-N-Chambers/dp/B0BSJC3K6N?ref_=ast_author_dp_rw&th=1&psc=1&dib=eyJ2IjoiMSJ9.i8APTXifyVifJ_cxdsiaPG2w4D9ZIVo83pgQwRajGqzGjHj071QN20LucGBJIEps.AsQYRvKhbOv0Wgc3n69gc0cLQkRIhzakJWEWo6c2goo&dib_tag=AUTHOR",
+        interiorImages: [
+            {
+                src: "/products/journals/my_journal/page1.jpeg",
+                alt: "My Journal — inside page 1"
+            },
+            {
+                src: "/products/journals/my_journal/page2.jpeg",
+                alt: "My Journal — inside page 2"
+            },
+            {
+                src: "/products/journals/my_journal/page3.jpeg",
+                alt: "My Journal — inside page 3"
+            }
+        ]
+    },
+    {
+        id: 2,
+        name: "Floral Journal",
+        image_url: "/products/journals/floral_journal/cover-new.png",
+        price_range: "$11.00",
+        type: "journal",
+        date_added: "2026-06-05",
+        available: true,
+        store: "amazon",
+        link: "https://www.amazon.com/Floral-Journal-N-Chambers/dp/B0CFZ9ZQTH?ref_=ast_author_dp_rw&th=1&psc=1&dib=eyJ2IjoiMSJ9.i8APTXifyVifJ_cxdsiaPG2w4D9ZIVo83pgQwRajGqzGjHj071QN20LucGBJIEps.AsQYRvKhbOv0Wgc3n69gc0cLQkRIhzakJWEWo6c2goo&dib_tag=AUTHOR",
+        interiorImages: [
+            {
+                src: "/products/journals/floral_journal/page1.jpeg",
+                alt: "Floral Journal — inside page 1"
+            },
+            {
+                src: "/products/journals/floral_journal/page2.jpeg",
+                alt: "Floral Journal — inside page 2"
+            },
+            {
+                src: "/products/journals/floral_journal/page3.jpeg",
+                alt: "Floral Journal — inside page 3"
+            }
+        ]
+    },
+    {
+        id: 3,
+        name: "Woods Journal",
+        image_url: "/products/journals/my_journal_woods/cover-new.png",
+        price_range: "$10.75",
+        type: "journal",
+        date_added: "2026-06-05",
+        available: true,
+        store: "amazon",
+        link: "https://www.amazon.com/My-Journal-Woods-Version-Chambers/dp/B0BSJPYTJB?ref_=ast_author_dp_rw&dib=eyJ2IjoiMSJ9.i8APTXifyVifJ_cxdsiaPG2w4D9ZIVo83pgQwRajGqzGjHj071QN20LucGBJIEps.AsQYRvKhbOv0Wgc3n69gc0cLQkRIhzakJWEWo6c2goo&dib_tag=AUTHOR",
+        interiorImages: [
+            {
+                src: "/products/journals/my_journal_woods/page1.jpeg",
+                alt: "Woods Journal — inside page 1"
+            },
+            {
+                src: "/products/journals/my_journal_woods/page2.jpeg",
+                alt: "Woods Journal — inside page 2"
+            },
+            {
+                src: "/products/journals/my_journal_woods/page3.jpeg",
+                alt: "Woods Journal — inside page 3"
+            }
+        ]
+    },
+    {
+        id: 4,
+        name: "My Journal: Floral 2",
+        image_url: "/products/journals/floral_journal_2/cover-new.png",
+        price_range: "",
+        type: "journal",
+        date_added: "2026-06-05",
+        available: true,
+        link: "https://www.amazon.com/dp/B0H4D2YTQN?ref_=ast_author_dp&th=1&psc=1",
+        store: "amazon",
+        interiorImages: [
+            {
+                src: "/products/journals/floral_journal_2/page1.jpeg",
+                alt: "Floral Journal 2 — inside page 1"
+            },
+            {
+                src: "/products/journals/floral_journal_2/page2.jpeg",
+                alt: "Floral Journal 2 — inside page 2"
+            },
+            {
+                src: "/products/journals/floral_journal_2/page3.jpeg",
+                alt: "Floral Journal 2 — inside page 3"
+            }
+        ]
+    },
+    {
+        id: 5,
+        name: "Spiral Notebook - Ruled Line",
+        image_url: "/products/notebooks/spiral/cover.png",
+        price_range: "15.00",
+        type: "notebook",
+        date_added: "2026-06-06",
+        available: true,
+        store: "etsy",
+        link: "https://www.etsy.com/listing/4326072135/spiral-notebook-ruled-line?sr_prefetch=1&pf_from=shop_home&ref=shop_home_active_1&logging_key=52502438cac15d7442ab85c7fc3f97b1d3a0012d%3A4326072135",
+        interiorImages: [
+            {
+                src: "/products/notebooks/spiral/page1.png",
+                alt: "Spiral Notebook — inside page 1"
+            },
+            {
+                src: "/products/notebooks/spiral/page2.png",
+                alt: "Spiral Notebook — inside page 2"
+            }
+        ]
+    },
+    {
+        id: 6,
+        name: "Unisex Heavy Cottton Floral Themed Tee",
+        image_url: "/products/tshirts/floral/cover.png",
+        price_range: "21.99 - 29.99",
+        type: "t-shirt",
+        date_added: "2026-06-06",
+        available: true,
+        store: "etsy",
+        link: "https://www.etsy.com/listing/4516132749/unisex-heavy-cotton-floral-themed-tee?sr_prefetch=1&pf_from=shop_home&ref=shop_home_active_4&logging_key=ebf930e5d0902dce06d90cf4a79a04d82ccc43b5%3A4516132749&variation1=6689311274",
+        interiorImages: [
+            {
+                src: "/products/tshirts/floral/page1.png",
+                alt: "Unisex Heavy Cotton Floral Themed Tee — Sport Grey"
+            },
+            {
+                src: "/products/tshirts/floral/page2.png",
+                alt: "Unisex Heavy Cotton Floral Themed Tee — Black"
+            },
+            {
+                src: "/products/tshirts/floral/page3.png",
+                alt: "Unisex Heavy Cotton Floral Themed Tee — Charcoal"
+            },
+            {
+                src: "/products/tshirts/floral/page4.png",
+                alt: "Unisex Heavy Cotton Floral Themed Tee — Royal"
+            },
+            {
+                src: "/products/tshirts/floral/page5.png",
+                alt: "Unisex Heavy Cotton Floral Themed Tee — Navy"
+            },
+            {
+                src: "/products/tshirts/floral/page6.png",
+                alt: "Unisex Heavy Cotton Floral Themed Tee — Maroon"
+            },
+            {
+                src: "/products/tshirts/floral/page7.png",
+                alt: "Unisex Heavy Cotton Floral Themed Tee — Light Blue"
+            },
+            {
+                src: "/products/tshirts/floral/page8.png",
+                alt: "Unisex Heavy Cotton Floral Themed Tee — Light Pink"
+            }
+        ]
+    },
+    {
+        id: 7,
+        name: "Floral Themed Design Tote Bag",
+        image_url: "/products/totes/floral/cover.png",
+        price_range: "23.99 - 28.98",
+        type: "tote",
+        date_added: "2026-06-06",
+        available: true,
+        store: "etsy",
+        link: "https://www.etsy.com/listing/4516128496/floral-themed-design-tote-bag?sr_prefetch=1&pf_from=shop_home&ref=shop_home_active_5&logging_key=f1be1e1376b135aeda96f0204dfeff11b262347f%3A4516128496",
+        interiorImages: [
+            {
+                src: "/products/totes/floral/page1.png",
+                alt: "Floral Themed Design Tote Bag"
+            },
+            {
+                src: "/products/totes/floral/page2.png",
+                alt: "Floral Themed Design Tote Bag"
+            },
+            {
+                src: "/products/totes/floral/page3.png",
+                alt: "Floral Themed Design Tote Bag"
+            },
+            {
+                src: "/products/totes/floral/page4.png",
+                alt: "Floral Themed Design Tote Bag"
+            }
+        ]
+    },
+    {
+        id: 8,
+        name: "Ocean View Tough Phone Case",
+        image_url: "/products/phone_cases/ocean_view/cover.png",
+        price_range: "23.49 - 26.75",
+        type: "phone case",
+        date_added: "2026-06-06",
+        available: true,
+        store: "etsy",
+        link: "https://www.etsy.com/listing/4516128868/ocean-view-tough-phone-case?sr_prefetch=1&pf_from=shop_home&ref=shop_home_active_2&logging_key=3e01f6d5c173c7b60cea83d7587c98c0709a0f52%3A4516128868",
+        interiorImages: [
+            {
+                src: "/products/phone_cases/ocean_view/page1.png",
+                alt: "Ocean View Tough Phone Case"
+            },
+            {
+                src: "/products/phone_cases/ocean_view/page2.png",
+                alt: "Ocean View Tough Phone Case"
+            },
+            {
+                src: "/products/phone_cases/ocean_view/page3.png",
+                alt: "Ocean View Tough Phone Case"
+            }
+        ]
+    },
+    {
+        id: 9,
+        name: "Forest Scene Slim Phone Case",
+        image_url: "/products/phone_cases/forest_scene/cover.png",
+        price_range: "18.34 - 24.99",
+        type: "phone case",
+        date_added: "2026-06-06",
+        available: true,
+        store: "etsy",
+        link: "https://www.etsy.com/listing/4326072044/forest-scene-slim-phone-case-cute-gift?sr_prefetch=1&pf_from=shop_home&ref=shop_home_active_3&logging_key=2a74a36ceab858d2d439042505ee56562fcb85e6%3A4326072044",
+        interiorImages: [
+            {
+                src: "/products/phone_cases/forest_scene/page1.png",
+                alt: "Forest Scene Slim Phone Case"
+            },
+            {
+                src: "/products/phone_cases/forest_scene/page2.png",
+                alt: "Forest Scene Slim Phone Case"
+            },
+            {
+                src: "/products/phone_cases/forest_scene/page3.png",
+                alt: "Forest Scene Slim Phone Case"
+            }
+        ]
+    }
+];
+function getProductById(id) {
+    return products.find((product)=>String(product.id) === id);
+}
+function getProductIds() {
+    return products.map((product)=>({
+            id: String(product.id)
+        }));
+}
+}),
+];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__0esv9-k._.js.map
