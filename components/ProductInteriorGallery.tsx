@@ -1,8 +1,12 @@
 import Image from "next/image";
-import type { InteriorImage } from "@/shared/types";
+
+type GalleryImage = {
+  src: string;
+  alt?: string;
+};
 
 type ProductInteriorGalleryProps = {
-  images: InteriorImage[];
+  images: GalleryImage[];
   title?: string;
 };
 
@@ -14,8 +18,12 @@ export default function ProductInteriorGallery({
 
   return (
     <section className="mt-16 border-t border-gray-100 pt-10">
-      <p className="text-xs uppercase tracking-[0.2em] text-gray-400">{title}</p>
-      <p className="mt-1 text-sm text-gray-500">Preview pages from this edition.</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-gray-400">
+        {title}
+      </p>
+      <p className="mt-1 text-sm text-gray-500">
+        Preview pages from this edition.
+      </p>
       <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {images.map((image, index) => (
           <li

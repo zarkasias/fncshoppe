@@ -1,20 +1,19 @@
 "use client";
-import type { Product, ProductFilters, CategoryFilter, StoreFilter, SortOption } from "@/shared/types";
+import type {
+  ProductFilters,
+  CategoryFilter,
+  StoreFilter,
+  SortOption,
+} from "@/shared/types";
 import { formatLabel } from "@/shared/methods";
-
-
-
-
 
 type ProductFilterBarProps = {
   filters: ProductFilters;
   onChange: (filters: ProductFilters) => void;
-  categories: NonNullable<Product["type"]>[];
-  stores: NonNullable<Product["store"]>[];
+  categories: string[];
+  stores: string[];
   resultCount: number;
 };
-
-
 
 type FilterSelectProps = {
   label: string;
@@ -95,13 +94,17 @@ export default function ProductFilterBar({
           <FilterSelect
             label="Store"
             value={filters.store}
-            onChange={(store) => onChange({ ...filters, store: store as StoreFilter })}
+            onChange={(store) =>
+              onChange({ ...filters, store: store as StoreFilter })
+            }
             options={storeOptions}
           />
           <FilterSelect
             label="Sort by"
             value={filters.sort}
-            onChange={(sort) => onChange({ ...filters, sort: sort as SortOption })}
+            onChange={(sort) =>
+              onChange({ ...filters, sort: sort as SortOption })
+            }
             options={sortOptions}
           />
         </div>
@@ -112,4 +115,3 @@ export default function ProductFilterBar({
     </div>
   );
 }
-

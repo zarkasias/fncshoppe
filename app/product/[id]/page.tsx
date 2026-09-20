@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 
 import ProductPage from "@/components/ProductPage";
-import { getProductById, getProductIds } from "@/shared/products";
+import { getProductById } from "@/lib/services/products-service";
 
-export function generateStaticParams() {
-  return getProductIds();
-}
+// export function generateStaticParams() {
+//   return getProductIds();
+// }
 
 type ProductProps = {
   params: Promise<{
@@ -16,7 +16,7 @@ type ProductProps = {
 export default async function Page({ params }: ProductProps) {
   const { id } = await params;
 
-  const product = getProductById(id);
+  const product = await getProductById(id);
 
   if (!product) {
     notFound();

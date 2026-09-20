@@ -1,7 +1,14 @@
 import FeaturedGrid from "@/components/FeatureGrid";
 import HeroSection from "@/components/HeroSection";
-import { products } from "@/shared/products";
+import { getPublishedProducts } from "@/lib/services/products-service";
 
-export default function HomePage() {
-  return <><HeroSection /><FeaturedGrid products={products} /></>;
+export default async function HomePage() {
+  const products = await getPublishedProducts();
+
+  return (
+    <>
+      <HeroSection />
+      <FeaturedGrid products={products} />
+    </>
+  );
 }
