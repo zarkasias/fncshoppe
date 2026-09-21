@@ -1,9 +1,24 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { getAllProducts } from "@/lib/services/admin-products-service";
 
 export default async function AdminProductsPage() {
   const products = await getAllProducts();
+
+  function getPrimaryImage(product: {
+    images?: {
+      image_url: string;
+      alt_text: string | null;
+      is_primary: boolean;
+      position: number;
+    }[];
+  }) {
+    return (
+      product.images?.find((image) => image.is_primary) ??
+      [...(product.images ?? [])].sort((a, b) => a.position - b.position)[0]
+    );
+  }
 
   return (
     <div>
@@ -30,14 +45,36 @@ export default async function AdminProductsPage() {
             className="rounded-xl border border-gray-200 bg-white p-4"
           >
             <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-gray-900">
-                  {product.name}
-                </p>
+              <div className="flex min-w-0 items-center gap-3">
+                {(() => {
+                  const primaryImage = getPrimaryImage(product);
 
-                <p className="mt-1 text-xs text-gray-500">
-                  {product.category?.name ?? "—"}
-                </p>
+                  return primaryImage?.image_url ? (
+                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                      <Image
+                        src={primaryImage.image_url}
+                        alt={primaryImage.alt_text ?? product.name}
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-[10px] text-gray-400">
+                      No image
+                    </div>
+                  );
+                })()}
+
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-gray-900">
+                    {product.name}
+                  </p>
+
+                  <p className="mt-1 text-xs text-gray-500">
+                    {product.category?.name ?? "—"}
+                  </p>
+                </div>
               </div>
 
               <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium capitalize text-gray-700">
@@ -88,8 +125,32 @@ export default async function AdminProductsPage() {
                   className="odd:bg-white even:bg-gray-100/80"
                 >
                   <td className="px-4 py-3">
-                    <div className="text-sm font-medium text-gray-900">
-                      {product.name}
+                    <div className="flex items-center gap-3">
+                      {(() => {
+                        const primaryImage = getPrimaryImage(product);
+
+                        return primaryImage?.image_url ? (
+                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                            <Image
+                              src={primaryImage.image_url}
+                              alt={primaryImage.alt_text ?? product.name}
+                              fill
+                              sizes="48px"
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-[10px] text-gray-400">
+                            No image
+                          </div>
+                        );
+                      })()}
+
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-medium text-gray-900">
+                          {product.name}
+                        </div>
+                      </div>
                     </div>
                   </td>
 
