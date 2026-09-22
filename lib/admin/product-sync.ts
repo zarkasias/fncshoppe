@@ -2,8 +2,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type {
   NormalizedProductImage,
+  NormalizedProductListing,
   NormalizedProductVariant,
   ProductFormImage,
+  ProductFormListing,
   ProductFormVariant,
 } from "@/shared/admin-product-types";
 
@@ -234,6 +236,117 @@ export async function syncProductVariants(
         available: variant.available,
         inventory_quantity: variant.inventory_quantity,
         track_inventory: variant.track_inventory,
+      })),
+    );
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+}
+
+export function normalizeListings(
+  listings: ProductFormListing[],
+): NormalizedProductListing[] {
+  return listings
+    .filter((listing) => listing.url.trim() !== "")
+    .map((listing) => {
+      const priceMin =
+        listing.price_min.trim() !== "" ? Number(listing.price_min) : null;
+
+      const priceMax =
+        listing.price_max.trim() !== "" ? Number(listing.price_max) : null;
+
+      if (priceMin !== null && (!Number.isFinite(priceMin) || priceMin < 0)) {
+        throw new Error(`Invalid minimum price for ${listing.channel}.`);
+      }
+
+      if (priceMax !== null && (!Number.isFinite(priceMax) || priceMax < 0)) {
+        throw new Error(`Invalid maximum price for ${listing.channel}.`);
+      }
+
+      return {
+        id: listing.id,
+        channel: listing.channel,
+        url: listing.url.trim(),
+        external_listing_id: listing.external_listing_id.trim() || null,
+        price_min: priceMin,
+        price_max: priceMax,
+        currency: listing.currency.trim() || "USD",
+        available: listing.available,
+      };
+    });
+}
+
+export async function syncProductListings(
+  supabase: SupabaseClient,
+  productId: string,
+  listings: NormalizedProductListing[],
+  now: string,
+) {
+  const { data: existingListings, error: existingError } = await supabase
+    .from("product_listings")
+    .select("id")
+    .eq("product_id", productId);
+
+  if (existingError) {
+    throw new Error(existingError.message);
+  }
+
+  const submittedIds = listings
+    .filter((listing) => listing.id)
+    .map((listing) => listing.id as string);
+
+  const removedIds =
+    existingListings
+      ?.map((listing) => listing.id)
+      .filter((id) => !submittedIds.includes(id)) ?? [];
+
+  if (removedIds.length > 0) {
+    const { error } = await supabase
+      .from("product_listings")
+      .delete()
+      .in("id", removedIds);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  for (const listing of listings.filter((listing) => listing.id)) {
+    const { error } = await supabase
+      .from("product_listings")
+      .update({
+        channel: listing.channel,
+        url: listing.url,
+        external_listing_id: listing.external_listing_id,
+        price_min: listing.price_min,
+        price_max: listing.price_max,
+        currency: listing.currency,
+        available: listing.available,
+        updated_at: now,
+      })
+      .eq("id", listing.id!)
+      .eq("product_id", productId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  const newListings = listings.filter((listing) => !listing.id);
+
+  if (newListings.length > 0) {
+    const { error } = await supabase.from("product_listings").insert(
+      newListings.map((listing) => ({
+        product_id: productId,
+        channel: listing.channel,
+        url: listing.url,
+        external_listing_id: listing.external_listing_id,
+        price_min: listing.price_min,
+        price_max: listing.price_max,
+        currency: listing.currency,
+        available: listing.available,
       })),
     );
 

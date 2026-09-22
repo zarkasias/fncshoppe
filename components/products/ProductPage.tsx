@@ -24,6 +24,27 @@ export default function ProductPage({ product }: { product: Product }) {
   const availableListings =
     product.listings?.filter((listing) => listing.available) ?? [];
 
+  function formatListingPrice(
+    priceMin: number | null,
+    priceMax: number | null,
+    currency: string,
+  ) {
+    if (priceMin === null && priceMax === null) {
+      return null;
+    }
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+    });
+
+    if (priceMin !== null && priceMax !== null && priceMin !== priceMax) {
+      return `${formatter.format(priceMin)} – ${formatter.format(priceMax)}`;
+    }
+
+    return formatter.format(priceMin ?? priceMax ?? 0);
+  }
+
   return (
     <div className="bg-white pb-20">
       <div className="mx-auto max-w-5xl px-6">
@@ -109,18 +130,40 @@ export default function ProductPage({ product }: { product: Product }) {
             )}
 
             <div className="flex flex-col gap-3">
-              {availableListings.map((listing) => (
-                <a
-                  key={listing.id}
-                  href={listing.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex w-full items-center justify-center gap-2 rounded bg-[#38BDF8] py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#0ea5e9]"
-                >
-                  Buy on {listing.channel === "amazon" ? "Amazon" : "Etsy"}{" "}
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-              ))}
+              {availableListings.map((listing) => {
+                const listingPrice = formatListingPrice(
+                  listing.price_min,
+                  listing.price_max,
+                  listing.currency,
+                );
+
+                const marketplaceName =
+                  listing.channel === "amazon" ? "Amazon" : "Etsy";
+
+                return (
+                  <a
+                    key={listing.id}
+                    href={listing.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-full items-center justify-between gap-4 rounded bg-[#38BDF8] px-5 py-3.5 text-white transition-colors hover:bg-[#0ea5e9]"
+                  >
+                    <span className="text-xs font-bold uppercase tracking-[0.15em]">
+                      Buy on {marketplaceName}
+                    </span>
+
+                    <span className="flex items-center gap-3">
+                      {listingPrice && (
+                        <span className="text-sm font-medium">
+                          {listingPrice}
+                        </span>
+                      )}
+
+                      <ExternalLink className="h-4 w-4" />
+                    </span>
+                  </a>
+                );
+              })}
             </div>
 
             {/* {product.story && (

@@ -18,41 +18,85 @@ export function getGalleryImages(product: Product) {
 }
 
 export function getProductPrice(product: Product) {
-  const variantPrices =
-    product.variants
-      ?.map((variant) => Number(variant.price))
-      .filter((price) => !Number.isNaN(price)) ?? [];
+  if (product.direct_sale_enabled) {
+    const variantPrices =
+      product.variants
+        ?.filter((variant) => variant.available)
+        .map((variant) => Number(variant.price))
+        .filter((price) => Number.isFinite(price) && price >= 0) ?? [];
 
-  if (variantPrices.length > 0) {
-    const minPrice = Math.min(...variantPrices);
-    const maxPrice = Math.max(...variantPrices);
+    if (variantPrices.length > 0) {
+      const minPrice = Math.min(...variantPrices);
+      const maxPrice = Math.max(...variantPrices);
 
-    return formatPriceRange(minPrice, maxPrice);
+      return formatPriceRange(minPrice, maxPrice);
+    }
   }
 
-  const listing = product.listings?.find(
-    (listing) => listing.available && listing.price_min !== null,
-  );
+  const listingPrices =
+    product.listings
+      ?.filter((listing) => listing.available && listing.price_min !== null)
+      .flatMap((listing) => {
+        const minPrice = Number(listing.price_min);
 
-  if (!listing || listing.price_min === null) {
+        const maxPrice =
+          listing.price_max !== null ? Number(listing.price_max) : minPrice;
+
+        const prices: number[] = [];
+
+        if (Number.isFinite(minPrice) && minPrice >= 0) {
+          prices.push(minPrice);
+        }
+
+        if (Number.isFinite(maxPrice) && maxPrice >= 0) {
+          prices.push(maxPrice);
+        }
+
+        return prices;
+      }) ?? [];
+
+  if (listingPrices.length === 0) {
     return null;
   }
 
-  const minPrice = Number(listing.price_min);
-  const maxPrice =
-    listing.price_max !== null ? Number(listing.price_max) : minPrice;
+  const minPrice = Math.min(...listingPrices);
+  const maxPrice = Math.max(...listingPrices);
 
   return formatPriceRange(minPrice, maxPrice);
 }
 
 export function isProductAvailable(product: Product) {
-  const hasAvailableVariant =
-    product.variants?.some((variant) => variant.available) ?? false;
+  const hasAvailableDirectSale =
+    product.direct_sale_enabled &&
+    (product.variants?.some(
+      (variant) =>
+        variant.available &&
+        (!variant.track_inventory || variant.inventory_quantity > 0),
+    ) ??
+      false);
 
   const hasAvailableListing =
     product.listings?.some((listing) => listing.available) ?? false;
 
-  return hasAvailableVariant || hasAvailableListing;
+  return hasAvailableDirectSale || hasAvailableListing;
+}
+
+export function getAvailableListings(product: Product) {
+  return product.listings?.filter((listing) => listing.available) ?? [];
+}
+
+export function getAvailableVariants(product: Product) {
+  if (!product.direct_sale_enabled) {
+    return [];
+  }
+
+  return (
+    product.variants?.filter(
+      (variant) =>
+        variant.available &&
+        (!variant.track_inventory || variant.inventory_quantity > 0),
+    ) ?? []
+  );
 }
 
 export function getGalleryTitle(product: Product) {

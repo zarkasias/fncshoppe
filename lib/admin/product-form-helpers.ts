@@ -1,7 +1,8 @@
-import type { Product } from "@/shared/types";
+import type { Product, MarketplaceChannel } from "@/shared/types";
 
 import type {
   ProductFormImage,
+  ProductFormListing,
   ProductFormVariant,
 } from "@/shared/admin-product-types";
 
@@ -62,5 +63,39 @@ export function createProductVariant(productId = ""): ProductFormVariant {
     available: true,
     inventory_quantity: 0,
     track_inventory: false,
+  };
+}
+
+export function getInitialProductListings(
+  product?: Product,
+): ProductFormListing[] {
+  return (product?.listings ?? []).map((listing) => ({
+    id: listing.id,
+    clientId: listing.id,
+    product_id: listing.product_id,
+    channel: listing.channel,
+    url: listing.url,
+    external_listing_id: listing.external_listing_id ?? "",
+    price_min: listing.price_min !== null ? String(listing.price_min) : "",
+    price_max: listing.price_max !== null ? String(listing.price_max) : "",
+    currency: listing.currency ?? "USD",
+    available: listing.available,
+  }));
+}
+
+export function createProductListing(
+  productId: string,
+  channel: MarketplaceChannel,
+): ProductFormListing {
+  return {
+    clientId: crypto.randomUUID(),
+    product_id: productId,
+    channel,
+    url: "",
+    external_listing_id: "",
+    price_min: "",
+    price_max: "",
+    currency: "USD",
+    available: true,
   };
 }

@@ -52,7 +52,8 @@ export default function FeaturedGrid({ products }: FeaturedGridProps) {
         </div>
       ) : (
         <p className="rounded-xl border border-dashed border-gray-200 bg-white px-6 py-12 text-center text-sm text-gray-500">
-          No products match these filters. Try adjusting category or store.
+          No products match these filters. Try adjusting category or
+          marketplace.
         </p>
       )}
     </section>
