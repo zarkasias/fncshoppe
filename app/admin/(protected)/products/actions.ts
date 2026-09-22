@@ -362,66 +362,58 @@ export async function updateProductSelling(formData: FormData) {
   redirect(`/admin/products/${id}/edit/selling`);
 }
 
-export async function publishProduct(formData: FormData) {
+export async function updateProductStatus(formData: FormData) {
   const { supabase } = await requireAdmin();
 
   const id = String(formData.get("id") ?? "").trim();
+
+  const status = String(formData.get("status") ?? "draft").trim();
 
   if (!id) {
     throw new Error("Product ID is required.");
   }
 
+  if (status !== "draft" && status !== "published" && status !== "archived") {
+    throw new Error("Invalid product status.");
+  }
+
   const now = new Date().toISOString();
 
-  const { data: product, error: productError } = await supabase
+  const { data: existingProduct, error: existingError } = await supabase
     .from("products")
-    .select(
-      `
-        id,
-        status,
-        direct_sale_enabled,
-        product_images(id, is_primary),
-        product_variants(id, available)
-        `,
-    )
+    .select("status, published_at, archived_at")
     .eq("id", id)
     .single();
 
-  if (productError) {
-    throw new Error(productError.message);
-  }
-
-  const hasPrimaryImage =
-    product.product_images?.some((image) => image.is_primary) ?? false;
-
-  if (!hasPrimaryImage) {
-    throw new Error("A primary image is required before publishing.");
-  }
-
-  if (product.direct_sale_enabled) {
-    const hasAvailableVariant =
-      product.product_variants?.some((variant) => variant.available) ?? false;
-
-    if (!hasAvailableVariant) {
-      throw new Error(
-        "Direct selling requires at least one available variant.",
-      );
-    }
+  if (existingError) {
+    throw new Error(existingError.message);
   }
 
   const updatePayload: {
-    status: "published";
+    status: "draft" | "published" | "archived";
     updated_at: string;
-    archived_at: null;
-    published_at?: string;
+    published_at?: string | null;
+    archived_at?: string | null;
   } = {
-    status: "published",
+    status,
     updated_at: now,
-    archived_at: null,
   };
 
-  if (product.status !== "published") {
-    updatePayload.published_at = now;
+  if (status === "published") {
+    updatePayload.archived_at = null;
+
+    if (existingProduct.status !== "published") {
+      updatePayload.published_at = now;
+    }
+  }
+
+  if (status === "draft") {
+    updatePayload.archived_at = null;
+    updatePayload.published_at = null;
+  }
+
+  if (status === "archived") {
+    updatePayload.archived_at = now;
   }
 
   const { error } = await supabase

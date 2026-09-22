@@ -11,6 +11,7 @@ import {
   isProductAvailable,
 } from "@/lib/products/product-utils";
 import ProductInteriorGallery from "@/components/products/ProductInteriorGallery";
+import DirectPurchaseForm from "@/components/products/DirectPurchaseForm";
 import type { Product } from "@/shared/types";
 
 export default function ProductPage({ product }: { product: Product }) {
@@ -126,6 +127,12 @@ export default function ProductPage({ product }: { product: Product }) {
                     Designed by FNC Shoppe
                   </p>
                 </div>
+              </div>
+            )}
+
+            {product.direct_sale_enabled && (
+              <div className="mb-6">
+                <DirectPurchaseForm product={product} />
               </div>
             )}
 
