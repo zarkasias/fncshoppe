@@ -56,6 +56,9 @@ export type Product = {
   description: string | null;
   category_id: string | null;
   status: ProductStatus;
+
+  direct_sale_enabled: boolean;
+
   created_at: string;
   updated_at: string;
   published_at: string | null;
