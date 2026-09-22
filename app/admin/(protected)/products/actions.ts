@@ -167,3 +167,263 @@ export async function saveProduct(formData: FormData) {
 
   redirect("/admin/products");
 }
+
+export async function createProduct(formData: FormData) {
+  const { supabase } = await requireAdmin();
+
+  const name = String(formData.get("name") ?? "").trim();
+
+  const slug = String(formData.get("slug") ?? "").trim();
+
+  const description = String(formData.get("description") ?? "").trim();
+
+  const categoryId = String(formData.get("category_id") ?? "").trim();
+
+  if (!name) {
+    throw new Error("Product name is required.");
+  }
+
+  if (!slug) {
+    throw new Error("Product slug is required.");
+  }
+
+  const now = new Date().toISOString();
+
+  const { data, error } = await supabase
+    .from("products")
+    .insert({
+      name,
+      slug,
+      description: description || null,
+      category_id: categoryId || null,
+
+      status: "draft",
+      direct_sale_enabled: false,
+
+      created_at: now,
+      updated_at: now,
+
+      published_at: null,
+      archived_at: null,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin/products");
+
+  redirect(`/admin/products/${data.id}/edit/images`);
+}
+
+export async function updateProductDetails(formData: FormData) {
+  const { supabase } = await requireAdmin();
+
+  const id = String(formData.get("id") ?? "").trim();
+
+  const name = String(formData.get("name") ?? "").trim();
+
+  const slug = String(formData.get("slug") ?? "").trim();
+
+  const description = String(formData.get("description") ?? "").trim();
+
+  const categoryId = String(formData.get("category_id") ?? "").trim();
+
+  const intent = String(formData.get("intent") ?? "save");
+
+  if (!id) {
+    throw new Error("Product ID is required.");
+  }
+
+  if (!name) {
+    throw new Error("Product name is required.");
+  }
+
+  if (!slug) {
+    throw new Error("Product slug is required.");
+  }
+
+  const { error } = await supabase
+    .from("products")
+    .update({
+      name,
+      slug,
+      description: description || null,
+      category_id: categoryId || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin/products");
+  revalidatePath(`/admin/products/${id}/edit`);
+  revalidatePath(`/product/${id}`);
+
+  if (intent === "continue") {
+    redirect(`/admin/products/${id}/edit/images`);
+  }
+
+  redirect(`/admin/products/${id}/edit`);
+}
+
+export async function updateProductImages(formData: FormData) {
+  const { supabase } = await requireAdmin();
+
+  const id = String(formData.get("id") ?? "").trim();
+
+  const intent = String(formData.get("intent") ?? "save");
+
+  if (!id) {
+    throw new Error("Product ID is required.");
+  }
+
+  const submittedImages = parseJsonFormField<ProductFormImage[]>(
+    formData,
+    "images",
+  );
+
+  const images = normalizeImages(submittedImages);
+
+  await syncProductImages(supabase, id, images);
+
+  revalidatePath("/admin/products");
+  revalidatePath(`/admin/products/${id}/edit/images`);
+  revalidatePath(`/product/${id}`);
+
+  if (intent === "continue") {
+    redirect(`/admin/products/${id}/edit/selling`);
+  }
+
+  redirect(`/admin/products/${id}/edit/images`);
+}
+
+export async function updateProductSelling(formData: FormData) {
+  const { supabase } = await requireAdmin();
+
+  const id = String(formData.get("id") ?? "").trim();
+
+  const intent = String(formData.get("intent") ?? "save");
+
+  const directSaleEnabled =
+    String(formData.get("direct_sale_enabled")) === "true";
+
+  if (!id) {
+    throw new Error("Product ID is required.");
+  }
+
+  const submittedVariants = parseJsonFormField<ProductFormVariant[]>(
+    formData,
+    "variants",
+  );
+
+  const variants = normalizeVariants(submittedVariants);
+
+  const now = new Date().toISOString();
+
+  const { error } = await supabase
+    .from("products")
+    .update({
+      direct_sale_enabled: directSaleEnabled,
+      updated_at: now,
+    })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  await syncProductVariants(supabase, id, variants, now);
+
+  revalidatePath("/admin/products");
+  revalidatePath(`/admin/products/${id}/edit/selling`);
+  revalidatePath(`/product/${id}`);
+
+  if (intent === "continue") {
+    redirect(`/admin/products/${id}/edit/review`);
+  }
+
+  redirect(`/admin/products/${id}/edit/selling`);
+}
+
+export async function publishProduct(formData: FormData) {
+  const { supabase } = await requireAdmin();
+
+  const id = String(formData.get("id") ?? "").trim();
+
+  if (!id) {
+    throw new Error("Product ID is required.");
+  }
+
+  const now = new Date().toISOString();
+
+  const { data: product, error: productError } = await supabase
+    .from("products")
+    .select(
+      `
+        id,
+        status,
+        direct_sale_enabled,
+        product_images(id, is_primary),
+        product_variants(id, available)
+        `,
+    )
+    .eq("id", id)
+    .single();
+
+  if (productError) {
+    throw new Error(productError.message);
+  }
+
+  const hasPrimaryImage =
+    product.product_images?.some((image) => image.is_primary) ?? false;
+
+  if (!hasPrimaryImage) {
+    throw new Error("A primary image is required before publishing.");
+  }
+
+  if (product.direct_sale_enabled) {
+    const hasAvailableVariant =
+      product.product_variants?.some((variant) => variant.available) ?? false;
+
+    if (!hasAvailableVariant) {
+      throw new Error(
+        "Direct selling requires at least one available variant.",
+      );
+    }
+  }
+
+  const updatePayload: {
+    status: "published";
+    updated_at: string;
+    archived_at: null;
+    published_at?: string;
+  } = {
+    status: "published",
+    updated_at: now,
+    archived_at: null,
+  };
+
+  if (product.status !== "published") {
+    updatePayload.published_at = now;
+  }
+
+  const { error } = await supabase
+    .from("products")
+    .update(updatePayload)
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin/products");
+  revalidatePath(`/admin/products/${id}/edit/review`);
+  revalidatePath(`/product/${id}`);
+
+  redirect("/admin/products");
+}

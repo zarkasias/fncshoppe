@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { PRODUCT_SELECT } from "./utils/product-select";
 
-export async function getAllProducts() {
+import type { Product } from "@/shared/types";
+
+export async function getAllProducts(): Promise<Product[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -13,10 +15,10 @@ export async function getAllProducts() {
     throw new Error(error.message);
   }
 
-  return data;
+  return (data ?? []) as Product[];
 }
 
-export async function getAdminProductById(id: string) {
+export async function getAdminProductById(id: string): Promise<Product | null> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -29,7 +31,7 @@ export async function getAdminProductById(id: string) {
     throw new Error(error.message);
   }
 
-  return data;
+  return data as Product | null;
 }
 
 export async function getAllCategories() {
