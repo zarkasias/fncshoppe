@@ -6,15 +6,18 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
 
 import {
+  normalizeListings,
   normalizeImages,
   normalizeVariants,
   parseJsonFormField,
   syncProductImages,
+  syncProductListings,
   syncProductVariants,
 } from "@/lib/admin/product-sync";
 
 import type {
   ProductFormImage,
+  ProductFormListing,
   ProductFormVariant,
 } from "@/shared/admin-product-types";
 
@@ -321,7 +324,14 @@ export async function updateProductSelling(formData: FormData) {
     "variants",
   );
 
+  const submittedListings = parseJsonFormField<ProductFormListing[]>(
+    formData,
+    "listings",
+  );
+
   const variants = normalizeVariants(submittedVariants);
+
+  const listings = normalizeListings(submittedListings);
 
   const now = new Date().toISOString();
 
@@ -338,6 +348,8 @@ export async function updateProductSelling(formData: FormData) {
   }
 
   await syncProductVariants(supabase, id, variants, now);
+
+  await syncProductListings(supabase, id, listings, now);
 
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}/edit/selling`);

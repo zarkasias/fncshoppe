@@ -67,10 +67,15 @@ export default function ProductFilterBar({
   ];
 
   const storeOptions = [
-    { value: "all", label: "All stores" },
+    { value: "all", label: "All marketplaces" },
     ...stores.map((store) => ({
       value: store,
-      label: formatLabel(store),
+      label:
+        store === "amazon"
+          ? "Amazon"
+          : store === "etsy"
+            ? "Etsy"
+            : formatLabel(store),
     })),
   ];
 
@@ -92,7 +97,7 @@ export default function ProductFilterBar({
             options={categoryOptions}
           />
           <FilterSelect
-            label="Store"
+            label="Marketplace"
             value={filters.store}
             onChange={(store) =>
               onChange({ ...filters, store: store as StoreFilter })

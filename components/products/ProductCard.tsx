@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+
 import type { Product } from "@/shared/types";
 
 import {
@@ -21,6 +23,9 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   const primaryImage = getPrimaryImage(product);
   const price = getProductPrice(product);
   const isAvailable = isProductAvailable(product);
+
+  const availableListings =
+    product.listings?.filter((listing) => listing.available) ?? [];
 
   return (
     <motion.div
@@ -65,24 +70,40 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         </div>
       </Link>
 
-      <div className="flex items-center justify-between bg-white px-4 py-4">
-        <Link href={productHref} className="min-w-0 flex-1">
-          <p className="text-sm font-medium leading-snug text-foreground">
-            {product.name}
-          </p>
+      <div className="bg-white px-4 py-4">
+        <div className="flex items-start justify-between gap-4">
+          <Link href={productHref} className="min-w-0 flex-1">
+            <p className="text-sm font-medium leading-snug text-foreground">
+              {product.name}
+            </p>
 
-          {price && (
-            <p className="mt-0.5 text-sm text-foreground/70">{price}</p>
-          )}
-        </Link>
+            {price && (
+              <p className="mt-0.5 text-sm text-foreground/70">{price}</p>
+            )}
+          </Link>
 
-        <Link
-          href={productHref}
-          className="ml-4 flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.12em] text-[#38BDF8] hover:opacity-80"
-        >
-          {isAvailable ? "Shop Now" : "View Product"}
-          <ArrowRight className="h-3 w-3" />
-        </Link>
+          <Link
+            href={productHref}
+            className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.12em] text-[#38BDF8] hover:opacity-80"
+          >
+            {isAvailable ? "Shop Now" : "View Product"}
+
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
+
+        {availableListings.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {availableListings.map((listing) => (
+              <span
+                key={listing.id}
+                className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-500"
+              >
+                {listing.channel === "amazon" ? "Amazon" : "Etsy"}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </motion.div>
   );
