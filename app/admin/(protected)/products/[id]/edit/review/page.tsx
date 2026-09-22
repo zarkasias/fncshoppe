@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { getAdminProductById } from "@/lib/services/admin-products-service";
 
-import { publishProduct } from "@/app/admin/(protected)/products/actions";
+import { updateProductStatus } from "@/app/admin/(protected)/products/actions";
 
 type ProductReviewPageProps = {
   params: Promise<{
@@ -157,18 +157,40 @@ export default async function ProductReviewPage({
         </div>
       </div>
 
-      <form action={publishProduct}>
+      <form
+        action={updateProductStatus}
+        className="space-y-4 border-t border-gray-200 pt-6"
+      >
         <input type="hidden" name="id" value={product.id} />
 
-        <div className="flex justify-end border-t border-gray-200 pt-6">
+        <div>
+          <label
+            htmlFor="status"
+            className="mb-1 block text-sm font-medium text-gray-700"
+          >
+            Status
+          </label>
+
+          <select
+            id="status"
+            name="status"
+            defaultValue={product.status}
+            className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2"
+          >
+            <option value="draft">Draft</option>
+
+            <option value="published">Published</option>
+
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+
+        <div className="flex justify-end">
           <button
             type="submit"
-            disabled={issues.length > 0}
-            className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-600 disabled:cursor-not-allowed disabled:bg-gray-300"
+            className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-600"
           >
-            {product.status === "published"
-              ? "Update published product"
-              : "Publish product"}
+            Save status
           </button>
         </div>
       </form>

@@ -58,6 +58,7 @@ export type Product = {
   status: ProductStatus;
 
   direct_sale_enabled: boolean;
+  show_in_storefront: boolean;
 
   created_at: string;
   updated_at: string;
