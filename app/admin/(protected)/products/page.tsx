@@ -105,6 +105,10 @@ export default async function AdminProductsPage() {
                 </th>
 
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Direct Sale
+                </th>
+
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                   Category
                 </th>
 
@@ -152,6 +156,10 @@ export default async function AdminProductsPage() {
                         </div>
                       </div>
                     </div>
+                  </td>
+
+                  <td className="px-4 py-3 text-sm text-gray-500 ">
+                    {product.direct_sale_enabled.toString()}
                   </td>
 
                   <td className="px-4 py-3 text-sm text-gray-500">

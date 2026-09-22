@@ -6,6 +6,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { Category, Product, ProductStatus } from "@/shared/types";
+import type {
+  ProductFormImage,
+  ProductFormVariant,
+} from "@/shared/admin-product-types";
+
+import {
+  createProductImage,
+  createProductVariant,
+  getInitialProductImages,
+  getInitialProductVariants,
+} from "@/lib/admin/product-form-helpers";
 
 import { saveProduct } from "@/app/admin/(protected)/products/actions";
 
@@ -14,37 +25,24 @@ type ProductFormProps = {
   categories: Category[];
 };
 
-type ProductFormImage = {
-  id?: string;
-  clientId: string;
-  product_id: string;
-  image_url: string;
-  alt_text: string | null;
-  is_primary: boolean;
-  position: number;
-};
-
 export default function ProductForm({ product, categories }: ProductFormProps) {
   const [name, setName] = useState(product?.name ?? "");
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [description, setDescription] = useState(product?.description ?? "");
   const [categoryId, setCategoryId] = useState(product?.category_id ?? "");
+  const [directSaleEnabled, setDirectSaleEnabled] = useState(
+    product?.direct_sale_enabled ?? false,
+  );
   const [status, setStatus] = useState<ProductStatus>(
     product?.status ?? "draft",
   );
 
   const [images, setImages] = useState<ProductFormImage[]>(
-    [...(product?.images ?? [])]
-      .sort((a, b) => a.position - b.position)
-      .map((image) => ({
-        id: image.id,
-        clientId: image.id,
-        product_id: image.product_id,
-        image_url: image.image_url,
-        alt_text: image.alt_text,
-        is_primary: image.is_primary,
-        position: image.position,
-      })),
+    getInitialProductImages(product),
+  );
+
+  const [variants, setVariants] = useState<ProductFormVariant[]>(
+    getInitialProductVariants(product),
   );
 
   function updateImage(index: number, updates: Partial<ProductFormImage>) {
@@ -93,14 +91,28 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     setImages((current) => [
       ...current,
       {
-        clientId: crypto.randomUUID(),
-        product_id: product?.id ?? "",
-        image_url: "",
-        alt_text: "",
-        is_primary: current.length === 0,
+        ...createProductImage(product?.id, current.length === 0),
         position: current.length,
       },
     ]);
+  }
+
+  function updateVariant(index: number, updates: Partial<ProductFormVariant>) {
+    setVariants((current) =>
+      current.map((variant, itemIndex) =>
+        itemIndex === index ? { ...variant, ...updates } : variant,
+      ),
+    );
+  }
+
+  function addVariant() {
+    setVariants((current) => [...current, createProductVariant(product?.id)]);
+  }
+
+  function removeVariant(index: number) {
+    setVariants((current) =>
+      current.filter((_, itemIndex) => itemIndex !== index),
+    );
   }
 
   return (
@@ -109,11 +121,33 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
 
       <input type="hidden" name="images" value={JSON.stringify(images)} />
 
-      <section className="space-y-5">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700">General</h2>
+      <input type="hidden" name="variants" value={JSON.stringify(variants)} />
 
-          <p className="text-sm text-gray-400">Basic product information.</p>
+      <section className="space-y-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-700">General</h2>
+
+            <p className="text-sm text-gray-400">Basic product information.</p>
+          </div>
+
+          <div>
+            <input
+              type="hidden"
+              name="direct_sale_enabled"
+              value={directSaleEnabled ? "true" : "false"}
+            />
+
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={directSaleEnabled}
+                onChange={(event) => setDirectSaleEnabled(event.target.checked)}
+              />
+
+              <span>Sell directly on this site</span>
+            </label>
+          </div>
         </div>
 
         <div>
@@ -157,6 +191,172 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             className="w-full rounded-lg border border-gray-300 px-3 py-2"
           />
         </div>
+
+        {directSaleEnabled && (
+          <section className="space-y-4 border-t border-gray-200 pt-8">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-700">
+                  Direct sale variants
+                </h2>
+
+                <p className="text-sm text-gray-400">
+                  Configure pricing and inventory for direct purchases.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={addVariant}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Add variant
+              </button>
+            </div>
+
+            {variants.length === 0 && (
+              <div className="rounded-lg border border-dashed border-gray-300 px-6 py-10 text-center text-sm text-gray-400">
+                No variants have been added yet.
+              </div>
+            )}
+
+            {variants.map((variant, index) => (
+              <div
+                key={variant.clientId}
+                className="space-y-4 rounded-lg border border-gray-200 bg-white p-4"
+              >
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      Variant name
+                    </label>
+
+                    <input
+                      value={variant.name}
+                      onChange={(event) =>
+                        updateVariant(index, {
+                          name: event.target.value,
+                        })
+                      }
+                      placeholder="Default or Small / Black"
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      SKU
+                    </label>
+
+                    <input
+                      value={variant.sku}
+                      onChange={(event) =>
+                        updateVariant(index, {
+                          sku: event.target.value,
+                        })
+                      }
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      Price
+                    </label>
+
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={variant.price}
+                      onChange={(event) =>
+                        updateVariant(index, {
+                          price: event.target.value,
+                        })
+                      }
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      Compare-at price
+                    </label>
+
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={variant.compare_at_price}
+                      onChange={(event) =>
+                        updateVariant(index, {
+                          compare_at_price: event.target.value,
+                        })
+                      }
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-6">
+                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={variant.available}
+                      onChange={(event) =>
+                        updateVariant(index, {
+                          available: event.target.checked,
+                        })
+                      }
+                    />
+                    Available
+                  </label>
+
+                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={variant.track_inventory}
+                      onChange={(event) =>
+                        updateVariant(index, {
+                          track_inventory: event.target.checked,
+                        })
+                      }
+                    />
+                    Track inventory
+                  </label>
+                </div>
+
+                {variant.track_inventory && (
+                  <div className="max-w-xs">
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      Inventory quantity
+                    </label>
+
+                    <input
+                      type="number"
+                      min="0"
+                      value={variant.inventory_quantity}
+                      onChange={(event) =>
+                        updateVariant(index, {
+                          inventory_quantity: Number(event.target.value),
+                        })
+                      }
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => removeVariant(index)}
+                  className="rounded-md border border-red-600 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                >
+                  Remove variant
+                </button>
+              </div>
+            ))}
+          </section>
+        )}
 
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">
