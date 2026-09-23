@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 
 import { createClient } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { stripe } from "@/lib/stripe/server";
 
 type CreateCheckoutSessionInput = {
@@ -19,15 +20,13 @@ export async function createCheckoutSession({
   }
 
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) {
-    throw new Error("Invalid quantity");
+    throw new Error("Invalid quantity.");
   }
 
   const supabase = await createClient();
 
   /*
-   * Get the variant from Supabase.
-   *
-   * We do NOT accept a price from the browser.
+   * Load variant from the public catalog data.
    */
   const { data: variant, error: variantError } = await supabase
     .from("product_variants")
@@ -50,7 +49,7 @@ export async function createCheckoutSession({
   }
 
   /*
-   * Get the parent product separately.
+   * Load parent product.
    */
   const { data: product, error: productError } = await supabase
     .from("products")
@@ -70,14 +69,9 @@ export async function createCheckoutSession({
   }
 
   /*
-   * Validate that this product can actually
-   * be purchased directly.
+   * Validate direct purchase.
    */
-  const canPurchase =
-    product.status === "published" ||
-    (process.env.NODE_ENV === "development" && product.status === "draft");
-
-  if (!canPurchase) {
+  if (product.status !== "published") {
     throw new Error("This product is not currently available for purchase.");
   }
 
@@ -89,10 +83,6 @@ export async function createCheckoutSession({
     throw new Error("This product option is not currently available.");
   }
 
-  /*
-   * Check inventory when inventory tracking
-   * is enabled.
-   */
   if (variant.track_inventory && variant.inventory_quantity < quantity) {
     throw new Error("There is not enough inventory available.");
   }
@@ -103,17 +93,58 @@ export async function createCheckoutSession({
     throw new Error("This product does not have a valid price.");
   }
 
-  /*
-   * Stripe works with the smallest currency unit.
-   *
-   * $10.50 becomes 1050 cents.
-   */
-  const unitAmount = Math.round(price * 100);
+  const subtotal = price * quantity;
 
   /*
-   * Build the site's current absolute URL.
+   * Create our internal pending order BEFORE
+   * sending the customer to Stripe.
+   */
+  const { data: order, error: orderError } = await supabaseAdmin
+    .from("orders")
+    .insert({
+      status: "pending",
+      currency: "USD",
+      subtotal,
+      total: subtotal,
+    })
+    .select("id")
+    .single();
+
+  if (orderError || !order) {
+    throw new Error(orderError?.message ?? "Could not create the order.");
+  }
+
+  /*
+   * Snapshot the purchased product data.
    *
-   * This works locally and in production.
+   * We store names/prices here because those may
+   * change in the catalog later.
+   */
+  const { error: orderItemError } = await supabaseAdmin
+    .from("order_items")
+    .insert({
+      order_id: order.id,
+
+      product_id: product.id,
+      variant_id: variant.id,
+
+      product_name: product.name,
+      variant_name: variant.name,
+
+      quantity,
+
+      unit_price: price,
+      line_total: subtotal,
+    });
+
+  if (orderItemError) {
+    await supabaseAdmin.from("orders").delete().eq("id", order.id);
+
+    throw new Error(orderItemError.message);
+  }
+
+  /*
+   * Build return URL.
    */
   const requestHeaders = await headers();
 
@@ -123,48 +154,77 @@ export async function createCheckoutSession({
       requestHeaders.get("host") ?? "localhost:3000"
     }`;
 
-  /*
-   * Create the Embedded Checkout Session.
-   */
+  const unitAmount = Math.round(price * 100);
 
-  const session = await stripe.checkout.sessions.create({
-    ui_mode: "embedded_page",
+  try {
+    /*
+     * Create Stripe Checkout Session.
+     */
+    const session = await stripe.checkout.sessions.create({
+      ui_mode: "embedded_page",
 
-    mode: "payment",
+      mode: "payment",
 
-    payment_method_types: ["card"],
+      payment_method_types: ["card"],
 
-    line_items: [
-      {
-        quantity,
+      line_items: [
+        {
+          quantity,
 
-        price_data: {
-          currency: "usd",
+          price_data: {
+            currency: "usd",
 
-          unit_amount: unitAmount,
+            unit_amount: unitAmount,
 
-          product_data: {
-            name:
-              variant.name === "Default"
-                ? product.name
-                : `${product.name} - ${variant.name}`,
+            product_data: {
+              name:
+                variant.name === "Default"
+                  ? product.name
+                  : `${product.name} - ${variant.name}`,
+            },
           },
         },
+      ],
+
+      metadata: {
+        order_id: order.id,
+        product_id: product.id,
+        variant_id: variant.id,
       },
-    ],
 
-    metadata: {
-      product_id: product.id,
-      variant_id: variant.id,
-    },
+      return_url:
+        `${origin}/checkout/return` + "?session_id={CHECKOUT_SESSION_ID}",
+    });
 
-    return_url:
-      `${origin}/checkout/return` + "?session_id={CHECKOUT_SESSION_ID}",
-  });
+    if (!session.client_secret) {
+      throw new Error("Stripe did not return a checkout client secret.");
+    }
 
-  if (!session.client_secret) {
-    throw new Error("Stripe did not return a checkout client secret.");
+    /*
+     * Save Stripe session ID onto our order.
+     */
+    const { error: sessionUpdateError } = await supabaseAdmin
+      .from("orders")
+      .update({
+        stripe_checkout_session_id: session.id,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", order.id);
+
+    if (sessionUpdateError) {
+      throw new Error(sessionUpdateError.message);
+    }
+
+    return session.client_secret;
+  } catch (error) {
+    /*
+     * Stripe session creation failed.
+     *
+     * Remove the pending order so we don't leave
+     * junk test/failed checkout records behind.
+     */
+    await supabaseAdmin.from("orders").delete().eq("id", order.id);
+
+    throw error;
   }
-
-  return session.client_secret;
 }
