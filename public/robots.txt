@@ -1,0 +1,24 @@
+
+# General search engine crawlers
+User-agent: *
+Allow: /
+
+# Prevent crawling internal routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /cart/
+
+# Meta AI training crawler
+User-agent: meta-externalagent
+Disallow: /
+
+# Meta AI content fetcher
+User-agent: Meta-ExternalFetcher
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+# Sitemap (enable when available)
+# Sitemap: https://www.fncshoppe.com/sitemap.xml
