@@ -163,6 +163,12 @@ export async function createCheckoutSession({
 
       payment_method_types: ["card"],
 
+      wallet_options: {
+        link: {
+          display: "never",
+        },
+      },
+
       phone_number_collection: {
         enabled: true,
       },
@@ -179,7 +185,7 @@ export async function createCheckoutSession({
             display_name: "Standard shipping",
 
             fixed_amount: {
-              amount: 800,
+              amount: 400,
               currency: "usd",
             },
 
