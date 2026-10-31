@@ -159,7 +159,7 @@ export default async function ProductReviewPage({
 
       <form
         action={updateProductStatus}
-        className="space-y-4 border-t border-gray-200 pt-6"
+        className="space-y-5 border-t border-gray-200 pt-6"
       >
         <input type="hidden" name="id" value={product.id} />
 
@@ -178,19 +178,47 @@ export default async function ProductReviewPage({
             className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2"
           >
             <option value="draft">Draft</option>
-
             <option value="published">Published</option>
-
             <option value="archived">Archived</option>
           </select>
         </div>
+
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              name="show_in_storefront"
+              value="true"
+              defaultChecked={product.show_in_storefront}
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-sky-500 focus:ring-sky-500"
+            />
+
+            <span>
+              <span className="block text-sm font-medium text-gray-700">
+                Show on storefront
+              </span>
+
+              <span className="mt-1 block text-sm leading-5 text-gray-400">
+                Include this product in the product grid on the main shop page.
+                The product must also be published.
+              </span>
+            </span>
+          </label>
+        </div>
+
+        {product.status !== "published" && (
+          <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+            Storefront visibility only takes effect after the product is
+            published.
+          </p>
+        )}
 
         <div className="flex justify-end">
           <button
             type="submit"
             className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-600"
           >
-            Save status
+            Save publishing settings
           </button>
         </div>
       </form>

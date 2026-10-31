@@ -13,6 +13,7 @@ export function getInitialProductImages(product?: Product): ProductFormImage[] {
       id: image.id,
       clientId: image.id,
       product_id: image.product_id,
+      storage_path: image.storage_path,
       image_url: image.image_url,
       alt_text: image.alt_text,
       is_primary: image.is_primary,
@@ -27,6 +28,7 @@ export function createProductImage(
   return {
     clientId: crypto.randomUUID(),
     product_id: productId,
+    storage_path: null,
     image_url: "",
     alt_text: "",
     is_primary: isPrimary,
