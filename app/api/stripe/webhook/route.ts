@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import Stripe from "stripe";
 
 import { stripe } from "@/lib/stripe/server";
@@ -145,6 +146,9 @@ export async function POST(request: Request) {
         status: 500,
       });
     }
+
+    revalidatePath("/");
+    revalidatePath("/product/[id]", "page");
   }
 
   if (event.type === "checkout.session.expired") {
