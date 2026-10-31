@@ -40,17 +40,17 @@ export async function POST(request: Request) {
   }
 
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
+    const eventSession = event.data.object;
 
-    /*
-     * For fulfillment, make sure Stripe actually
-     * considers the Checkout Session paid.
-     */
-    if (session.payment_status !== "paid") {
+    if (eventSession.payment_status !== "paid") {
       return Response.json({
         received: true,
       });
     }
+
+    const session = await stripe.checkout.sessions.retrieve(eventSession.id, {
+      expand: ["shipping_cost.shipping_rate"],
+    });
 
     const orderId = session.metadata?.order_id;
 
@@ -65,6 +65,20 @@ export async function POST(request: Request) {
       });
     }
 
+    const shippingDetails =
+      session.collected_information?.shipping_details ?? null;
+
+    if (!shippingDetails) {
+      console.error(
+        "Paid Stripe Checkout Session is missing shipping details:",
+        session.id,
+      );
+
+      return new Response("Missing shipping details.", {
+        status: 400,
+      });
+    }
+
     const paymentIntentId =
       typeof session.payment_intent === "string"
         ? session.payment_intent
@@ -73,14 +87,59 @@ export async function POST(request: Request) {
     const customerEmail =
       session.customer_details?.email ?? session.customer_email ?? null;
 
-    const { error } = await supabaseAdmin.rpc("fulfill_order", {
-      p_order_id: orderId,
-      p_customer_email: customerEmail,
-      p_payment_intent_id: paymentIntentId,
-    });
+    const customerPhone = session.customer_details?.phone ?? null;
 
-    if (error) {
-      console.error("Could not fulfill paid order:", error);
+    const shippingRate = session.shipping_cost?.shipping_rate;
+
+    const shippingMethod =
+      typeof shippingRate === "string"
+        ? shippingRate
+        : (shippingRate?.display_name ?? null);
+
+    const subtotal =
+      session.amount_subtotal !== null ? session.amount_subtotal / 100 : null;
+
+    const shippingAmount =
+      (session.total_details?.amount_shipping ??
+        session.shipping_cost?.amount_total ??
+        0) / 100;
+
+    const total =
+      session.amount_total !== null ? session.amount_total / 100 : null;
+
+    const { error: shippingUpdateError } = await supabaseAdmin
+      .from("orders")
+      .update({
+        customer_phone: customerPhone,
+        shipping_name: shippingDetails.name,
+        shipping_address: shippingDetails.address,
+        shipping_method: shippingMethod,
+        shipping_amount: shippingAmount,
+        ...(subtotal !== null ? { subtotal } : {}),
+        ...(total !== null ? { total } : {}),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", orderId);
+
+    if (shippingUpdateError) {
+      console.error("Could not save shipping details:", shippingUpdateError);
+
+      return new Response("Could not save shipping details.", {
+        status: 500,
+      });
+    }
+
+    const { error: fulfillmentError } = await supabaseAdmin.rpc(
+      "fulfill_order",
+      {
+        p_order_id: orderId,
+        p_customer_email: customerEmail,
+        p_payment_intent_id: paymentIntentId,
+      },
+    );
+
+    if (fulfillmentError) {
+      console.error("Could not fulfill paid order:", fulfillmentError);
 
       return new Response("Could not fulfill order.", {
         status: 500,

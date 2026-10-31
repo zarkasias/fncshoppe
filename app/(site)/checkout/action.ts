@@ -1,7 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
-
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { stripe } from "@/lib/stripe/server";
@@ -146,13 +144,11 @@ export async function createCheckoutSession({
   /*
    * Build return URL.
    */
-  const requestHeaders = await headers();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "");
 
-  const origin =
-    requestHeaders.get("origin") ??
-    `${requestHeaders.get("x-forwarded-proto") ?? "http"}://${
-      requestHeaders.get("host") ?? "localhost:3000"
-    }`;
+  if (!siteUrl) {
+    throw new Error("NEXT_PUBLIC_SITE_URL is not configured.");
+  }
 
   const unitAmount = Math.round(price * 100);
 
@@ -166,6 +162,41 @@ export async function createCheckoutSession({
       mode: "payment",
 
       payment_method_types: ["card"],
+
+      phone_number_collection: {
+        enabled: true,
+      },
+
+      shipping_address_collection: {
+        allowed_countries: ["US"],
+      },
+
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+
+            display_name: "Standard shipping",
+
+            fixed_amount: {
+              amount: 800,
+              currency: "usd",
+            },
+
+            delivery_estimate: {
+              minimum: {
+                unit: "business_day",
+                value: 3,
+              },
+
+              maximum: {
+                unit: "business_day",
+                value: 7,
+              },
+            },
+          },
+        },
+      ],
 
       line_items: [
         {
@@ -192,8 +223,7 @@ export async function createCheckoutSession({
         variant_id: variant.id,
       },
 
-      return_url:
-        `${origin}/checkout/return` + "?session_id={CHECKOUT_SESSION_ID}",
+      return_url: `${siteUrl}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     if (!session.client_secret) {
