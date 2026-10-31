@@ -27,9 +27,15 @@ export function normalizeImages(
   images: ProductFormImage[],
 ): NormalizedProductImage[] {
   const normalized = images
-    .filter((image) => image.image_url.trim() !== "")
+    .filter(
+      (image) =>
+        image.storage_path?.trim() !== "" &&
+        image.storage_path !== null &&
+        image.image_url.trim() !== "",
+    )
     .map((image, index) => ({
       id: image.id,
+      storage_path: image.storage_path!.trim(),
       image_url: image.image_url.trim(),
       alt_text: image.alt_text?.trim() || null,
       is_primary: image.is_primary,
@@ -41,7 +47,6 @@ export function normalizeImages(
   }
 
   const primaryIndex = normalized.findIndex((image) => image.is_primary);
-
   const selectedPrimaryIndex = primaryIndex >= 0 ? primaryIndex : 0;
 
   return normalized.map((image, index) => ({
@@ -135,6 +140,7 @@ export async function syncProductImages(
     const { error } = await supabase
       .from("product_images")
       .update({
+        storage_path: image.storage_path,
         image_url: image.image_url,
         alt_text: image.alt_text,
         is_primary: image.is_primary,
@@ -154,6 +160,7 @@ export async function syncProductImages(
     const { error } = await supabase.from("product_images").insert(
       newImages.map((image) => ({
         product_id: productId,
+        storage_path: image.storage_path,
         image_url: image.image_url,
         alt_text: image.alt_text,
         is_primary: image.is_primary,

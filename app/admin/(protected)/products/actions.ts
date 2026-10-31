@@ -24,6 +24,7 @@ import type {
 import type { ProductStatus } from "@/shared/types";
 
 const PRODUCT_STATUSES: ProductStatus[] = ["draft", "published", "archived"];
+const PRODUCT_IMAGE_BUCKET = "product-images";
 
 function isProductStatus(value: string): value is ProductStatus {
   return PRODUCT_STATUSES.includes(value as ProductStatus);
@@ -278,7 +279,6 @@ export async function updateProductImages(formData: FormData) {
   const { supabase } = await requireAdmin();
 
   const id = String(formData.get("id") ?? "").trim();
-
   const intent = String(formData.get("intent") ?? "save");
 
   if (!id) {
@@ -290,10 +290,73 @@ export async function updateProductImages(formData: FormData) {
     "images",
   );
 
-  const images = normalizeImages(submittedImages);
+  const { data: existingImages, error: existingImagesError } = await supabase
+    .from("product_images")
+    .select("id, storage_path")
+    .eq("product_id", id);
+
+  if (existingImagesError) {
+    throw new Error(existingImagesError.message);
+  }
+
+  const preparedImages = submittedImages.map((image) => {
+    const storagePath = image.storage_path?.trim() ?? "";
+
+    if (!storagePath) {
+      return {
+        ...image,
+        storage_path: null,
+        image_url: "",
+      };
+    }
+
+    const belongsToProduct =
+      storagePath.startsWith(`${id}/`) ||
+      storagePath.startsWith("legacy/products/");
+
+    if (!belongsToProduct) {
+      throw new Error("Invalid product image storage path.");
+    }
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(storagePath);
+
+    return {
+      ...image,
+      storage_path: storagePath,
+      image_url: publicUrl,
+    };
+  });
+
+  const images = normalizeImages(preparedImages);
 
   await syncProductImages(supabase, id, images);
 
+  const retainedPaths = new Set(images.map((image) => image.storage_path));
+
+  const removedStoragePaths =
+    existingImages
+      ?.map((image) => image.storage_path)
+      .filter(
+        (storagePath): storagePath is string =>
+          Boolean(storagePath) && !retainedPaths.has(storagePath),
+      ) ?? [];
+
+  if (removedStoragePaths.length > 0) {
+    const { error: storageDeleteError } = await supabase.storage
+      .from(PRODUCT_IMAGE_BUCKET)
+      .remove(removedStoragePaths);
+
+    if (storageDeleteError) {
+      console.error(
+        "Product metadata was saved, but old Storage objects could not be removed:",
+        storageDeleteError,
+      );
+    }
+  }
+
+  revalidatePath("/");
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}/edit/images`);
   revalidatePath(`/product/${id}`);
@@ -366,8 +429,9 @@ export async function updateProductStatus(formData: FormData) {
   const { supabase } = await requireAdmin();
 
   const id = String(formData.get("id") ?? "").trim();
-
   const status = String(formData.get("status") ?? "draft").trim();
+  const showInStorefront =
+    String(formData.get("show_in_storefront") ?? "false") === "true";
 
   if (!id) {
     throw new Error("Product ID is required.");
@@ -391,11 +455,13 @@ export async function updateProductStatus(formData: FormData) {
 
   const updatePayload: {
     status: "draft" | "published" | "archived";
+    show_in_storefront: boolean;
     updated_at: string;
     published_at?: string | null;
     archived_at?: string | null;
   } = {
     status,
+    show_in_storefront: showInStorefront,
     updated_at: now,
   };
 
@@ -410,10 +476,12 @@ export async function updateProductStatus(formData: FormData) {
   if (status === "draft") {
     updatePayload.archived_at = null;
     updatePayload.published_at = null;
+    updatePayload.show_in_storefront = false;
   }
 
   if (status === "archived") {
     updatePayload.archived_at = now;
+    updatePayload.show_in_storefront = false;
   }
 
   const { error } = await supabase
@@ -425,6 +493,7 @@ export async function updateProductStatus(formData: FormData) {
     throw new Error(error.message);
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}/edit/review`);
   revalidatePath(`/product/${id}`);
