@@ -12,6 +12,7 @@ export type Category = {
 export type ProductImage = {
   id: string;
   product_id: string;
+  storage_path: string | null;
   image_url: string;
   alt_text: string | null;
   is_primary: boolean;

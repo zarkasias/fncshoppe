@@ -17,7 +17,7 @@ export default function ProductInteriorGallery({
   if (!images.length) return null;
 
   return (
-    <section className="mt-16 border-t border-gray-100 pt-10">
+    <section className="mt-8 border-t border-gray-100 pt-10">
       <p className="text-xs uppercase tracking-[0.2em] text-gray-400">
         {title}
       </p>

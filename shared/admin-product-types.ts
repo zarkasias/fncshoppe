@@ -28,6 +28,7 @@ export type ProductFormImage = {
   id?: string;
   clientId: string;
   product_id: string;
+  storage_path: string | null;
   image_url: string;
   alt_text: string | null;
   is_primary: boolean;
@@ -49,6 +50,7 @@ export type ProductFormVariant = {
 
 export type NormalizedProductImage = {
   id?: string;
+  storage_path: string;
   image_url: string;
   alt_text: string | null;
   is_primary: boolean;
