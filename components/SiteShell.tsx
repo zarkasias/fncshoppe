@@ -20,9 +20,11 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
     window.scrollTo({ top: 0, left: 0 });
   }, [pathname]);
 
-  return <div className="min-h-screen border bg-gray-50">
-    <Navbar isTopOfPage={isTopOfPage} />
-    <main className="min-h-screen bg-gray-50 pt-24">{children}</main>
-    <Footer />
-  </div>;
+  return (
+    <div className="min-h-screen border">
+      <Navbar isTopOfPage={isTopOfPage} />
+      <main className="min-h-screen bg-gray-50">{children}</main>
+      <Footer />
+    </div>
+  );
 }
