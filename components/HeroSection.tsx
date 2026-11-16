@@ -106,7 +106,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative isolate min-h-[calc(100svh-6rem)] overflow-hidden bg-[#DCEEFF] text-white"
+      className="relative isolate min-h-svh overflow-hidden bg-[#DCEEFF] text-white"
       aria-labelledby="fnc-hero-heading"
     >
       <video
@@ -142,7 +142,7 @@ export default function HeroSection() {
         variants={sequenceVariants}
         initial={shouldReduceMotion ? false : "hidden"}
         animate={animationState}
-        className="flex min-h-[calc(100svh-6rem)] w-full items-end px-6 pt-14 pb-32 sm:px-10 sm:pb-36 lg:px-16 lg:pb-40 xl:px-20"
+        className="flex min-h-svh w-full items-end px-6 pt-28 pb-[118px] sm:px-10 sm:pb-[134px] lg:px-16 lg:pb-[150px] xl:px-20"
       >
         <div className="w-full max-w-[46rem]">
           <motion.div
