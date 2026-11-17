@@ -8,6 +8,7 @@ import Footer from "@/components/global/Footer";
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const [isTopOfPage, setIsTopOfPage] = useState(true);
   const pathname = usePathname();
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => setIsTopOfPage(window.scrollY < 12);
@@ -23,7 +24,10 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen border">
       <Navbar isTopOfPage={isTopOfPage} />
-      <main className="min-h-screen bg-gray-50">{children}</main>
+      {/* The home page hero sits under the fixed navbar; every other page is offset below it. */}
+      <main className={`min-h-screen bg-gray-50 ${isHome ? "" : "pt-24"}`}>
+        {children}
+      </main>
       <Footer />
     </div>
   );

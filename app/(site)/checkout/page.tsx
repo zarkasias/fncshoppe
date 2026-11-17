@@ -28,7 +28,7 @@ export default async function CheckoutPage({
   }
 
   return (
-    <div className="mx-auto nax-w-4xl px-6 py-3">
+    <div className="mx-auto max-w-4xl px-6 py-3">
       <CheckoutBackButton />
 
       <div className="mb-4">
