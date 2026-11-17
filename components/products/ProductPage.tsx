@@ -48,7 +48,7 @@ export default function ProductPage({ product }: { product: Product }) {
 
   return (
     <div className="bg-white pb-20">
-      <div className="mx-auto max-w-5xl px-6">
+      <div className="mx-auto max-w-5xl px-6 pt-4">
         <motion.div
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}

@@ -1,4 +1,11 @@
+import Link from "next/link";
 import Logo from "./logo";
+
+const policyLinks = [
+  { href: "/shipping-returns", label: "Shipping & Returns" },
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms & Conditions" },
+];
 
 export default function Footer() {
   return (
@@ -9,7 +16,23 @@ export default function Footer() {
             <Logo />
           </div>
 
-          <div className="hidden md:block" aria-hidden />
+          <nav aria-label="Store policies">
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-gray-900">
+              Information
+            </h4>
+            <ul className="space-y-2">
+              {policyLinks.map(({ href, label }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-sm text-gray-600 transition-colors hover:text-gray-900"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           <div className="max-w-xs md:max-w-none">
             <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-gray-900">
